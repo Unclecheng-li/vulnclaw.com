@@ -177,8 +177,13 @@ body {
 }
 
 .navbar-toggler {
-    border: 1px solid var(--medium-gray);
+    border: 1px solid var(--lobster-red);
     padding: 6px 10px;
+    color: var(--lobster-red);
+}
+
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
 }
 
 .navbar-toggler-icon {
@@ -348,8 +353,13 @@ body {
     background: var(--terminal-bg);
     border: 1px solid var(--terminal-border);
     border-radius: 12px;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(239, 68, 68, 0.1);
+}
+
+.terminal-window.full-terminal {
+    overflow-x: auto;
 }
 
 .terminal-header {
@@ -391,10 +401,13 @@ body {
     line-height: 1.7;
     max-height: 500px;
     overflow-y: auto;
+    overflow-x: hidden;
+    white-space: pre;
 }
 
 .terminal-body::-webkit-scrollbar {
     width: 6px;
+    height: 6px;
 }
 
 .terminal-body::-webkit-scrollbar-track {
@@ -404,6 +417,10 @@ body {
 .terminal-body::-webkit-scrollbar-thumb {
     background: var(--medium-gray);
     border-radius: 3px;
+}
+
+.terminal-body::-webkit-scrollbar-thumb:hover {
+    background: var(--lobster-red);
 }
 
 .terminal-line {
@@ -964,7 +981,7 @@ body {
     margin: 0;
 }
 
-/* Responsive */
+/* Responsive - Tablet */
 @media (max-width: 992px) {
     .hero {
         padding: 60px 0;
@@ -985,82 +1002,273 @@ body {
     .flow-step {
         margin-bottom: 30px;
     }
+
+    .footer-brand,
+    .footer h5 {
+        margin-top: 24px;
+    }
 }
 
+/* Responsive - Mobile */
 @media (max-width: 768px) {
-    .hero-title {
-        font-size: 2rem;
+    /* Top bar */
+    .top-bar {
+        padding: 6px 0;
     }
 
-    .section-title {
-        font-size: 1.8rem;
+    .status-text {
+        font-size: 11px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 60%;
     }
 
-    .hero-stats {
-        gap: 24px;
+    /* Navbar */
+    .navbar-collapse {
+        background: var(--dark-bg);
+        padding: 16px;
+        border-radius: 8px;
+        margin-top: 12px;
+        border: 1px solid var(--medium-gray);
     }
 
-    .stat-number {
-        font-size: 1.6rem;
+    .navbar-nav .nav-link {
+        margin: 8px 0;
+        padding: 8px 0 !important;
     }
 
-    .flow-step {
-        display: flex;
-        align-items: flex-start;
-        text-align: left;
-        gap: 16px;
+    .btn-primary-nav {
+        display: block;
+        text-align: center;
+        margin-top: 8px;
     }
 
-    .flow-icon {
-        flex-shrink: 0;
-        width: 52px;
-        height: 52px;
-        font-size: 20px;
-    }
-
-    .cta-box {
-        padding: 40px 24px;
-    }
-
-    .cta-box h2 {
-        font-size: 1.6rem;
-    }
-}
-
-@media (max-width: 576px) {
+    /* Hero */
     .hero {
         padding: 40px 0;
     }
 
     .hero-title {
+        font-size: 1.9rem;
+    }
+
+    .hero-subtitle {
+        font-size: 14px;
+    }
+
+    .hero-slogan {
+        font-size: 1rem;
+    }
+
+    .hero-cta {
+        flex-direction: column;
+    }
+
+    .hero-cta .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .hero-badge {
+        gap: 6px;
+    }
+
+    .badge-item {
+        font-size: 11px;
+        padding: 3px 8px;
+    }
+
+    .hero-stats {
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .stat-number {
+        font-size: 1.5rem;
+    }
+
+    /* Terminal */
+    .terminal-window {
+        font-size: 11px;
+    }
+
+    .terminal-body {
+        font-size: 11px;
+        padding: 14px;
+        max-height: 360px;
+    }
+
+    .terminal-header {
+        padding: 8px 12px;
+    }
+
+    /* Sections */
+    .section-title {
         font-size: 1.7rem;
+    }
+
+    .section-subtitle {
+        font-size: 14px;
+        margin-bottom: 30px;
+    }
+
+    .features,
+    .quickstart,
+    .flow-section,
+    .ecosystem,
+    .cta-section {
+        padding: 60px 0;
+    }
+
+    /* Feature Cards */
+    .feature-card {
+        padding: 20px;
+    }
+
+    .feature-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+    }
+
+    /* Step Cards */
+    .step-card {
+        padding: 20px 14px;
+    }
+
+    .step-code {
+        font-size: 11px;
+    }
+
+    /* Flow */
+    .flow-step {
+        display: flex;
+        align-items: flex-start;
+        text-align: left;
+        gap: 14px;
+        margin-bottom: 24px;
+    }
+
+    .flow-icon {
+        flex-shrink: 0;
+        width: 48px;
+        height: 48px;
+        font-size: 18px;
+    }
+
+    /* Key Numbers */
+    .key-num {
+        font-size: 1.8rem;
+    }
+
+    .key-label {
+        font-size: 10px;
+    }
+
+    /* Providers */
+    .provider-chip {
+        font-size: 12px;
+        padding: 8px 14px;
+    }
+
+    /* CTA */
+    .cta-box {
+        padding: 32px 20px;
+    }
+
+    .cta-box h2 {
+        font-size: 1.5rem;
+    }
+
+    .cta-box p {
+        font-size: 14px;
+    }
+
+    /* Footer */
+    .footer {
+        padding: 40px 0 20px;
+    }
+
+    .footer-logo {
+        height: 40px;
+    }
+
+    .security-notice {
+        font-size: 12px;
+        padding: 12px 14px;
+    }
+}
+
+/* Responsive - Small Mobile */
+@media (max-width: 576px) {
+    .hero-title {
+        font-size: 1.6rem;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
     }
 
     .hero-stats {
         flex-direction: column;
-        gap: 16px;
+        gap: 14px;
     }
 
-    .step-card {
-        padding: 24px 16px;
+    .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .stat-number {
+        font-size: 1.4rem;
+    }
+
+    .stat-label {
+        font-size: 11px;
+    }
+
+    .key-num-item {
+        padding: 18px 12px;
     }
 
     .key-num {
-        font-size: 2rem;
+        font-size: 1.6rem;
+    }
+
+    .provider-chip {
+        font-size: 11px;
+        padding: 6px 12px;
+    }
+
+    .flow-step p {
+        font-size: 11px;
+    }
+
+    .flow-step h5 {
+        font-size: 0.85rem;
     }
 
     .btn-primary,
     .btn-outline-ghost {
         width: 100%;
         justify-content: center;
+        font-size: 13px;
+        padding: 12px 20px;
     }
 
     .cta-buttons {
         flex-direction: column;
+        gap: 10px;
     }
 
     .cta-buttons .btn {
         width: 100%;
+    }
+
+    .footer-bottom {
+        font-size: 12px;
     }
 }
 
