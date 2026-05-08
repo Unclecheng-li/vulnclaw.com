@@ -3,51 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VulnClaw 🦞 — AI 驱动的渗透测试 CLI 工具</title>
+    <title>VulnClaw — AI 驱动的渗透测试 CLI 工具</title>
     <meta name="description" content="VulnClaw 是一款 AI 驱动的渗透测试 CLI 工具，基于 LLM Agent + MCP 工具链 + 渗透 Skill 编排，自然语言输入即可完成信息收集→漏洞发现→漏洞利用→报告生成全流程。">
     <meta name="keywords" content="VulnClaw, AI, pentest, penetration testing, CLI, MCP, security, 渗透测试, 安全工具, CTF">
 
-    <!-- Open Graph -->
     <meta property="og:title" content="VulnClaw — 说人话，打漏洞">
     <meta property="og:description" content="AI 驱动的渗透测试 CLI 工具">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://vulnclaw.com">
 
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <!-- Custom CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/logo.png">
 </head>
 <body>
 
+    <!-- Custom Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <!-- Scanlines Overlay -->
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+    <div class="noise"></div>
+
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress"></div>
+
+    <!-- WebGL Background Canvas -->
+    <canvas id="webglCanvas"></canvas>
+
     <!-- Top Bar -->
     <div class="top-bar">
-        <div class="container">
-            <div class="d-flex align-items-center">
-                <i class="fas fa-shell-spin me-2"></i>
-                <span class="status-text">🦞 VulnClaw v0.2.6 — 说人话，打漏洞</span>
-                <div class="status-indicator ms-auto">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="top-bar-marquee">
+                    <span class="marquee-content">
+                        <span class="marquee-item"><i class="fas fa-terminal"></i> VulnClaw v0.2.7</span>
+                        <span class="marquee-separator">//</span>
+                        <span class="marquee-item"><i class="fas fa-bolt"></i> AI-Powered Pentest</span>
+                        <span class="marquee-separator">//</span>
+                        <span class="marquee-item"><i class="fas fa-shield-alt"></i> MIT License</span>
+                        <span class="marquee-separator">//</span>
+                        <span class="marquee-item"><i class="fab fa-python"></i> Python 3.10+</span>
+                        <span class="marquee-separator">//</span>
+                        <span class="marquee-item"><i class="fas fa-brain"></i> LLM Agent</span>
+                        <span class="marquee-separator">//</span>
+                        <span class="marquee-item"><i class="fas fa-network-wired"></i> MCP Protocol</span>
+                        <span class="marquee-separator">//</span>
+                        <span class="marquee-item"><i class="fas fa-bug"></i> 20 Pentest Skills</span>
+                        <span class="marquee-separator">//</span>
+                        <span class="marquee-item"><i class="fas fa-code"></i> Open Source</span>
+                        <span class="marquee-separator">//</span>
+                        <span class="marquee-item"><i class="fas fa-terminal"></i> VulnClaw v0.2.7</span>
+                        <span class="marquee-separator">//</span>
+                        <span class="marquee-item"><i class="fas fa-bolt"></i> AI-Powered Pentest</span>
+                        <span class="marquee-separator">//</span>
+                        <span class="marquee-item"><i class="fas fa-shield-alt"></i> MIT License</span>
+                        <span class="marquee-separator">//</span>
+                        <span class="marquee-item"><i class="fab fa-python"></i> Python 3.10+</span>
+                    </span>
+                </div>
+                <div class="status-indicator d-none d-md-flex">
                     <span class="pulse-dot"></span>
-                    <span class="status-label">MVP READY</span>
+                    <span class="status-label">SYSTEM ONLINE</span>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Header -->
-    <header class="header">
+    <header class="header" id="header">
         <nav class="navbar navbar-expand-lg">
-            <div class="container">
+            <div class="container-fluid px-4">
                 <a class="navbar-brand" href="#">
-                    <img src="assets/logo.png" alt="VulnClaw" class="nav-logo">
+                    <div class="logo-wrapper">
+                        <img src="assets/logo.png" alt="VulnClaw" class="nav-logo">
+                        <div class="logo-glow"></div>
+                    </div>
                     <span class="brand-text">VulnClaw</span>
                 </a>
 
@@ -57,26 +94,18 @@
 
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="#features">特性</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#quickstart">快速开始</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#flow">工作流程</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#ecosystem">生态</a>
-                        </li>
+                        <li class="nav-item"><a class="nav-link" href="#features">特性</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#quickstart">快速开始</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#flow">工作流</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#ecosystem">生态</a></li>
                         <li class="nav-item">
                             <a class="nav-link" href="https://github.com/Unclecheng-li/VulnClaw" target="_blank">
-                                <i class="fab fa-github me-1"></i> GitHub
+                                <i class="fab fa-github"></i>
                             </a>
                         </li>
                     </ul>
-                    <a href="#quickstart" class="btn btn-primary-nav ms-3">
-                        <i class="fas fa-download me-1"></i> 安装
+                    <a href="#quickstart" class="btn btn-primary-nav ms-lg-3">
+                        <i class="fas fa-download me-2"></i> 安装
                     </a>
                 </div>
             </div>
@@ -84,126 +113,127 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="hero">
-        <canvas id="particleCanvas"></canvas>
-        <div class="glow-orb glow-orb-1"></div>
-        <div class="glow-orb glow-orb-2"></div>
-        <div class="container">
-            <div class="row align-items-center min-vh-100">
-                <!-- Left: Brand -->
-                <div class="col-lg-6">
-                    <div class="hero-content">
-                        <div class="hero-badge">
-                            <span class="badge-item"><i class="fab fa-python me-1"></i> Python</span>
-                            <span class="badge-item"><i class="fas fa-shield-alt me-1"></i> MIT</span>
-                            <span class="badge-item"><i class="fas fa-download me-1"></i> v0.2.6</span>
-                        </div>
-
-                        <h1 class="hero-title">
-                            AI 渗透测试
-                            <br>
-                            <span class="text-accent">从自然语言开始</span>
-                        </h1>
-
-                        <p class="hero-subtitle">
-                            VulnClaw 是一款 AI 驱动的渗透测试 CLI 工具。基于 LLM Agent + MCP 工具链 + 渗透 Skill，
-                            只需描述你的目标，即可自动完成「信息收集 → 漏洞发现 → 漏洞利用 → 报告生成」全流程。
-                        </p>
-
-                        <div class="hero-slogan">
-                            <i class="fas fa-quote-left me-2"></i>
-                            说人话，打漏洞。
-                            <i class="fas fa-quote-right ms-2"></i>
-                        </div>
-
-                        <div class="hero-cta">
-                            <button class="btn btn-primary btn-lg" id="installBtn" onclick="copyInstall()">
-                                <i class="fas fa-terminal me-2"></i>
-                                <span id="installBtnText">pip install vulnclaw</span>
-                            </button>
-                            <a href="https://github.com/Unclecheng-li/VulnClaw" target="_blank" class="btn btn-outline-ghost btn-lg ms-3">
-                                <i class="fab fa-github me-2"></i>
-                                GitHub
-                            </a>
-                        </div>
-
-                        <div class="hero-stats">
-                            <div class="stat-item">
-                                <span class="stat-number">8</span>
-                                <span class="stat-label">LLM Provider</span>
+    <section class="hero" id="hero">
+        <div class="hero-grid"></div>
+        <div class="hero-content-wrapper">
+            <div class="container-fluid px-4 px-lg-5">
+                <div class="row align-items-center min-vh-100">
+                    <div class="col-lg-7">
+                        <div class="hero-content">
+                            <div class="hero-badge" data-aos="fade-down">
+                                <span class="badge-item badge-pulse"><i class="fas fa-circle text-success me-2" style="font-size:8px;"></i>v0.2.7 MVP</span>
+                                <span class="badge-item"><i class="fab fa-python me-2"></i>Python</span>
+                                <span class="badge-item"><i class="fas fa-shield-alt me-2"></i>MIT</span>
                             </div>
-                            <div class="stat-item">
-                                <span class="stat-number">11</span>
-                                <span class="stat-label">MCP 服务</span>
+
+                            <h1 class="hero-title" data-aos="fade-up" data-aos-delay="100">
+                                <span class="title-line">AI 渗透测试</span>
+                                <span class="title-line title-accent">
+                                    <span class="glitch-text" data-text="从自然语言开始">从自然语言开始</span>
+                                </span>
+                            </h1>
+
+                            <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="200">
+                                基于 <span class="highlight">LLM Agent</span> + <span class="highlight">MCP 工具链</span> + <span class="highlight">渗透 Skill</span><br>
+                                描述目标，自动完成「信息收集 → 漏洞发现 → 漏洞利用 → 报告生成」
+                            </p>
+
+                            <div class="hero-slogan" data-aos="fade-up" data-aos-delay="300">
+                                <span class="slogan-line"></span>
+                                <span>说人话，打漏洞</span>
+                                <span class="slogan-line"></span>
                             </div>
-                            <div class="stat-item">
-                                <span class="stat-number">20</span>
-                                <span class="stat-label">渗透 Skill</span>
+
+                            <div class="hero-cta" data-aos="fade-up" data-aos-delay="400">
+                                <button class="btn btn-primary btn-lg magnetic-btn" id="installBtn" onclick="copyInstall()">
+                                    <i class="fas fa-terminal me-2"></i>
+                                    <span id="installBtnText">pip install vulnclaw</span>
+                                </button>
+                                <a href="https://github.com/Unclecheng-li/VulnClaw" target="_blank" class="btn btn-outline-ghost btn-lg magnetic-btn">
+                                    <i class="fab fa-github me-2"></i>
+                                    GitHub
+                                </a>
                             </div>
-                            <div class="stat-item">
-                                <span class="stat-number">29</span>
-                                <span class="stat-label">编解码工具</span>
+
+                            <div class="hero-stats" data-aos="fade-up" data-aos-delay="500">
+                                <div class="stat-item" data-count="8">
+                                    <div class="stat-number-wrapper">
+                                        <span class="stat-number">0</span>
+                                        <span class="stat-suffix">+</span>
+                                    </div>
+                                    <span class="stat-label">LLM Provider</span>
+                                </div>
+                                <div class="stat-divider"></div>
+                                <div class="stat-item" data-count="11">
+                                    <div class="stat-number-wrapper">
+                                        <span class="stat-number">0</span>
+                                        <span class="stat-suffix">+</span>
+                                    </div>
+                                    <span class="stat-label">MCP 服务</span>
+                                </div>
+                                <div class="stat-divider"></div>
+                                <div class="stat-item" data-count="20">
+                                    <div class="stat-number-wrapper">
+                                        <span class="stat-number">0</span>
+                                        <span class="stat-suffix">+</span>
+                                    </div>
+                                    <span class="stat-label">渗透 Skill</span>
+                                </div>
+                                <div class="stat-divider"></div>
+                                <div class="stat-item" data-count="29">
+                                    <div class="stat-number-wrapper">
+                                        <span class="stat-number">0</span>
+                                        <span class="stat-suffix">+</span>
+                                    </div>
+                                    <span class="stat-label">编解码工具</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Right: Terminal -->
-                <div class="col-lg-6">
-                    <div class="terminal-container">
-                        <div class="terminal-window">
-                            <div class="terminal-header">
-                                <div class="terminal-dots">
-                                    <span class="dot dot-red"></span>
-                                    <span class="dot dot-yellow"></span>
-                                    <span class="dot dot-green"></span>
+                    <div class="col-lg-5">
+                        <div class="terminal-container" data-aos="fade-left" data-aos-delay="300">
+                            <div class="terminal-glow"></div>
+                            <div class="terminal-window">
+                                <div class="terminal-header">
+                                    <div class="terminal-dots">
+                                        <span class="dot dot-red"></span>
+                                        <span class="dot dot-yellow"></span>
+                                        <span class="dot dot-green"></span>
+                                    </div>
+                                    <span class="terminal-title">vulnclaw — zsh</span>
+                                    <div class="terminal-actions">
+                                        <span class="terminal-status">
+                                            <span class="status-dot"></span>
+                                            online
+                                        </span>
+                                    </div>
                                 </div>
-                                <span class="terminal-title">vulnclaw — zsh</span>
-                            </div>
-                            <div class="terminal-body" id="terminalBody">
-                                <div class="terminal-line">
-                                    <span class="prompt">$</span>
-                                    <span class="cmd"> pip install vulnclaw</span>
-                                </div>
-                                <div class="terminal-line output-success">
-                                    Successfully installed vulnclaw-0.2.6
-                                </div>
-                                <div class="terminal-line">
-                                    <span class="prompt">$</span>
-                                    <span class="cmd"> vulnclaw config set llm.api_key sk-***</span>
-                                </div>
-                                <div class="terminal-line output-comment">
-                                    # 配置完成，开始渗透测试
-                                </div>
-                                <div class="terminal-line">
-                                    <span class="prompt">$</span>
-                                    <span class="cmd"> vulnclaw</span>
-                                </div>
-                                <div class="terminal-line output-muted">
-                                    🦞 VulnClaw v0.2.6 — AI 渗透测试助手
-                                </div>
-                                <div class="terminal-line output-muted">
-                                    目标未设置 | 工具链就绪 | 知识库已加载
-                                </div>
-                                <div class="terminal-line">
-                                    <span class="prompt">🦞</span>
-                                    <span class="cmd"> 对 http://target.example.com 进行渗透测试</span>
-                                </div>
-                                <div class="terminal-line output-info">[*] 进入自主渗透模式，按 Ctrl+C 可随时中断</div>
-                                <div class="terminal-line output-section">── Round 1 ── 信息收集</div>
-                                <div class="terminal-line output-success">[+] 开放端口: 22, 80, 443, 8080</div>
-                                <div class="terminal-line output-success">[+] Web 指纹: Apache/2.4.62</div>
-                                <div class="terminal-line output-section">── Round 2 ── 漏洞发现</div>
-                                <div class="terminal-line output-success">[+] 发现 /manager/html (Tomcat Manager)</div>
-                                <div class="terminal-line output-success">[+] 命中 CVE-202X-XXXX: Apache Tomcat 认证绕过</div>
-                                <div class="terminal-line output-section">── Round 3 ── 漏洞利用</div>
-                                <div class="terminal-line output-success">[+] 漏洞验证成功 uid=0(root)</div>
-                                <div class="terminal-line output-section">── Round 4 ── 报告生成</div>
-                                <div class="terminal-line output-success">[+] 报告已保存: ./reports/target_20260419.md</div>
-                                <div class="terminal-line output-success">[+] PoC 脚本已保存: ./pocs/CVE-202X-XXXX.py</div>
-                                <div class="terminal-line output-muted cursor-line">
-                                    <span class="prompt">🦞</span>
-                                    <span class="cursor"></span>
+                                <div class="terminal-body" id="terminalBody">
+                                    <div class="terminal-line"><span class="prompt">$</span><span class="cmd"> pip install vulnclaw</span></div>
+                                    <div class="terminal-line output-success">Successfully installed vulnclaw-0.2.7</div>
+                                    <div class="terminal-line"><span class="prompt">$</span><span class="cmd"> vulnclaw config set llm.api_key sk-***</span></div>
+                                    <div class="terminal-line output-comment"># 配置完成，开始渗透测试</div>
+                                    <div class="terminal-line"><span class="prompt">$</span><span class="cmd"> vulnclaw</span></div>
+                                    <div class="terminal-line output-muted">🦞 VulnClaw v0.2.7 — AI 渗透测试助手</div>
+                                    <div class="terminal-line output-muted">目标未设置 | 工具链就绪 | 知识库已加载</div>
+                                    <div class="terminal-line"><span class="prompt">🦞</span><span class="cmd"> 对 http://target.example.com 进行渗透测试</span></div>
+                                    <div class="terminal-line output-info">[*] 进入自主渗透模式，按 Ctrl+C 可随时中断</div>
+                                    <div class="terminal-line output-section">── Round 1 ── 信息收集</div>
+                                    <div class="terminal-line output-success">[+] 开放端口: 22, 80, 443, 8080</div>
+                                    <div class="terminal-line output-success">[+] Web 指纹: Apache/2.4.62</div>
+                                    <div class="terminal-line output-section">── Round 2 ── 漏洞发现</div>
+                                    <div class="terminal-line output-success">[+] 发现 /manager/html (Tomcat Manager)</div>
+                                    <div class="terminal-line output-success">[+] 命中 CVE-202X-XXXX: Apache Tomcat 认证绕过</div>
+                                    <div class="terminal-line output-section">── Round 3 ── 漏洞利用</div>
+                                    <div class="terminal-line output-success">[+] 漏洞验证成功 uid=0(root)</div>
+                                    <div class="terminal-line output-section">── Round 4 ── 报告生成</div>
+                                    <div class="terminal-line output-success">[+] 报告已保存: ./reports/target_20260419.md</div>
+                                    <div class="terminal-line output-success">[+] PoC 脚本已保存: ./pocs/CVE-202X-XXXX.py</div>
+                                    <div class="terminal-line output-muted cursor-line">
+                                        <span class="prompt">🦞</span>
+                                        <span class="cursor"></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -211,77 +241,104 @@
                 </div>
             </div>
         </div>
+
+        <div class="scroll-indicator">
+            <div class="mouse">
+                <div class="wheel"></div>
+            </div>
+            <span>SCROLL</span>
+        </div>
     </section>
 
     <!-- Features Section -->
     <section id="features" class="features">
-        <div class="glow-orb glow-orb-3" style="top: 20%; right: -10%;"></div>
+        <div class="section-bg-glow"></div>
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <h2 class="section-title">核心特性</h2>
-                    <p class="section-subtitle">开箱即用，让每一次渗透都有章可循</p>
+                    <div class="section-header" data-aos="fade-up">
+                        <span class="section-tag">CORE FEATURES</span>
+                        <h2 class="section-title">
+                            <span class="title-word">核心</span>
+                            <span class="title-word title-accent">特性</span>
+                        </h2>
+                        <p class="section-subtitle">开箱即用，让每一次渗透都有章可循</p>
+                    </div>
                 </div>
             </div>
             <div class="row g-4">
                 <div class="col-lg-3 col-md-6">
-                    <div class="feature-card">
+                    <div class="feature-card holographic-card" data-aos="fade-up" data-aos-delay="0">
+                        <div class="particle-border"></div>
+                        <div class="holographic-shine"></div>
+                        <div class="feature-number">01</div>
                         <div class="feature-icon">
                             <i class="fas fa-comments"></i>
                         </div>
                         <h3>自然语言驱动</h3>
-                        <p>用日常语言描述渗透意图，AI 自动识别阶段、选择工具、编排测试流程。无需记住繁琐命令。</p>
+                        <p>用日常语言描述渗透意图，AI 自动识别阶段、选择工具、编排测试流程。</p>
                         <ul class="feature-list">
                             <li>自动阶段识别与切换</li>
                             <li>上下文记忆与推理</li>
                             <li>多轮自主渗透循环</li>
                         </ul>
+                        <div class="card-border-glow"></div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <div class="feature-card">
+                    <div class="feature-card holographic-card" data-aos="fade-up" data-aos-delay="100">
+                        <div class="particle-border"></div>
+                        <div class="holographic-shine"></div>
+                        <div class="feature-number">02</div>
                         <div class="feature-icon">
                             <i class="fas fa-puzzle-piece"></i>
                         </div>
                         <h3>MCP 工具链</h3>
-                        <p>11 个安全 MCP 服务 + 26 个工具定义（fetch / Burp / Frida / Chrome DevTools / IDA Pro 等），开箱即用。</p>
+                        <p>11 个安全 MCP 服务 + 26 个工具定义，开箱即用。</p>
                         <ul class="feature-list">
                             <li>fetch / Burp / Chrome DevTools</li>
                             <li>Frida / ADB / JADX</li>
                             <li>IDA Pro 二进制逆向</li>
                         </ul>
+                        <div class="card-border-glow"></div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <div class="feature-card">
+                    <div class="feature-card holographic-card" data-aos="fade-up" data-aos-delay="200">
+                        <div class="particle-border"></div>
+                        <div class="holographic-shine"></div>
+                        <div class="feature-number">03</div>
                         <div class="feature-icon">
                             <i class="fas fa-crosshairs"></i>
                         </div>
                         <h3>20 个渗透 Skill</h3>
-                        <p>7 个核心 Skill 覆盖全流程，13 个专项 Skill 深入 Web / 安卓 / 逆向 / CTF / OSINT 场景，含 138 份参考文档。</p>
+                        <p>7 个核心 Skill 覆盖全流程，13 个专项 Skill 深入各场景。</p>
                         <ul class="feature-list">
                             <li>pentest-flow 全流程编排</li>
                             <li>ctf-web / ctf-crypto / ctf-misc</li>
                             <li>osint-recon 四维信息收集</li>
                             <li>waf-bypass / crypto-toolkit</li>
-                            <li>python_execute 精确 payload 构造</li>
                         </ul>
+                        <div class="card-border-glow"></div>
                     </div>
                 </div>
-                
                 <div class="col-lg-3 col-md-6">
-                    <div class="feature-card">
+                    <div class="feature-card holographic-card" data-aos="fade-up" data-aos-delay="300">
+                        <div class="particle-border"></div>
+                        <div class="holographic-shine"></div>
+                        <div class="feature-number">04</div>
                         <div class="feature-icon">
                             <i class="fas fa-brain"></i>
                         </div>
                         <h3>高级 Agent 能力</h3>
-                        <p>持续性渗透测试 + 推理过程可视化 + Python 代码执行，轻松应对复杂安全场景。</p>
+                        <p>持续性渗透测试 + 推理可视化 + Python 代码执行。</p>
                         <ul class="feature-list">
-                            <li>持续性渗透（100轮/周期 × 10周期）</li>
-                            <li>推理过程 `think on/off` 控制</li>
-                            <li>python_execute 精确 payload 构造</li>
+                            <li>持续性渗透（100轮/周期）</li>
+                            <li>推理过程 think on/off 控制</li>
+                            <li>python_execute 精确 payload</li>
                             <li>内置 CVE/知识库安全检索</li>
                         </ul>
+                        <div class="card-border-glow"></div>
                     </div>
                 </div>
             </div>
@@ -290,53 +347,91 @@
 
     <!-- Quick Start Section -->
     <section id="quickstart" class="quickstart">
-        <div class="glow-orb" style="width: 350px; height: 350px; background: var(--lobster-orange); bottom: -50px; left: -80px; filter: blur(100px); opacity: 0.1;"></div>
+        <div class="quickstart-bg-grid"></div>
         <div class="container">
             <div class="row">
-                <div class="col-lg-8 mx-auto text-center">
-                    <h2 class="section-title">快速开始</h2>
-                    <p class="section-subtitle">四步上手，3 分钟开始第一次渗透测试</p>
+                <div class="col-lg-8 mx-auto">
+                    <div class="section-header text-center" data-aos="fade-up">
+                        <span class="section-tag">QUICK START</span>
+                        <h2 class="section-title">
+                            <span class="title-word">快速</span>
+                            <span class="title-word title-accent">开始</span>
+                        </h2>
+                        <p class="section-subtitle">四步上手，3 分钟开始第一次渗透测试</p>
+                    </div>
                 </div>
             </div>
-            <div class="row g-4 mt-4">
-                <div class="col-md-3">
-                    <div class="step-card">
-                        <div class="step-number">01</div>
-                        <div class="step-icon"><i class="fas fa-download"></i></div>
-                        <h4>安装</h4>
-                        <div class="step-code">pip install vulnclaw</div>
-                    </div>
+            <div class="timeline-wrapper">
+                <div class="timeline-line">
+                    <div class="timeline-progress"></div>
                 </div>
-                <div class="col-md-3">
-                    <div class="step-card">
-                        <div class="step-number">02</div>
-                        <div class="step-icon"><i class="fas fa-key"></i></div>
-                        <h4>配置 Key</h4>
-                        <div class="step-code">vulnclaw config set<br>llm.api_key sk-xxx</div>
+                <div class="row g-4 timeline-steps">
+                    <div class="col-md-3">
+                        <div class="step-card" data-aos="fade-up" data-aos-delay="0">
+                            <div class="step-node">
+                                <div class="step-pulse"></div>
+                                <div class="step-number">01</div>
+                            </div>
+                            <div class="step-icon-wrapper">
+                                <div class="step-icon"><i class="fas fa-download"></i></div>
+                            </div>
+                            <h4>安装</h4>
+                            <div class="step-code">
+                                <span class="code-prompt">$</span> <span class="code-cmd">pip install vulnclaw</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="step-card">
-                        <div class="step-number">03</div>
-                        <div class="step-icon"><i class="fas fa-rocket"></i></div>
-                        <h4>启动</h4>
-                        <div class="step-code">vulnclaw</div>
+                    <div class="col-md-3">
+                        <div class="step-card" data-aos="fade-up" data-aos-delay="150">
+                            <div class="step-node">
+                                <div class="step-pulse"></div>
+                                <div class="step-number">02</div>
+                            </div>
+                            <div class="step-icon-wrapper">
+                                <div class="step-icon"><i class="fas fa-key"></i></div>
+                            </div>
+                            <h4>配置 Key</h4>
+                            <div class="step-code">
+                                <span class="code-prompt">$</span> <span class="code-cmd">vulnclaw config set llm.api_key sk-xxx</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="step-card">
-                        <div class="step-number">04</div>
-                        <div class="step-icon"><i class="fas fa-bullseye"></i></div>
-                        <h4>渗透</h4>
-                        <div class="step-code">对 http://target.com<br>进行渗透测试</div>
+                    <div class="col-md-3">
+                        <div class="step-card" data-aos="fade-up" data-aos-delay="300">
+                            <div class="step-node">
+                                <div class="step-pulse"></div>
+                                <div class="step-number">03</div>
+                            </div>
+                            <div class="step-icon-wrapper">
+                                <div class="step-icon"><i class="fas fa-rocket"></i></div>
+                            </div>
+                            <h4>启动</h4>
+                            <div class="step-code">
+                                <span class="code-prompt">$</span> <span class="code-cmd">vulnclaw</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="step-card" data-aos="fade-up" data-aos-delay="450">
+                            <div class="step-node">
+                                <div class="step-pulse"></div>
+                                <div class="step-number">04</div>
+                            </div>
+                            <div class="step-icon-wrapper">
+                                <div class="step-icon"><i class="fas fa-bullseye"></i></div>
+                            </div>
+                            <h4>渗透</h4>
+                            <div class="step-code">
+                                <span class="code-prompt">🦞</span> <span class="code-cmd">对 target.com 进行渗透测试</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Full workflow terminal -->
             <div class="row mt-5">
                 <div class="col-lg-10 mx-auto">
-                    <div class="terminal-window full-terminal">
+                    <div class="terminal-window full-terminal" data-aos="zoom-in">
                         <div class="terminal-header">
                             <div class="terminal-dots">
                                 <span class="dot dot-red"></span>
@@ -349,19 +444,23 @@
                             </button>
                         </div>
                         <div class="terminal-body">
-                            <div class="terminal-cmd">$ <span class="text-accent">pip install vulnclaw</span></div>
-                            <div class="terminal-cmd">$ <span class="text-accent">vulnclaw config set llm.base_url</span> https://api.minimaxi.com/v1</div>
-                            <div class="terminal-cmd">$ <span class="text-accent">vulnclaw config set llm.model</span> MiniMax-M2.7</div>
-                            <div class="terminal-cmd">$ <span class="text-accent">vulnclaw config set llm.api_key</span> sk-your-key-here</div>
-                            <div class="terminal-cmd">$ <span class="text-accent">vulnclaw doctor</span> <span class="output-comment"># 检查环境</span></div>
+                            <div class="terminal-cmd"><span class="code-prompt">$</span> <span class="text-accent">pip install vulnclaw</span></div>
+                            <div class="terminal-cmd"><span class="code-prompt">$</span> <span class="text-accent">vulnclaw config set llm.base_url</span> https://api.minimaxi.com/v1</div>
+                            <div class="terminal-cmd"><span class="code-prompt">$</span> <span class="text-accent">vulnclaw config set llm.model</span> MiniMax-M2.7</div>
+                            <div class="terminal-cmd"><span class="code-prompt">$</span> <span class="text-accent">vulnclaw config set llm.api_key</span> sk-your-key-here</div>
+                            <div class="terminal-cmd"><span class="code-prompt">$</span> <span class="text-accent">vulnclaw doctor</span> <span class="output-comment"># 检查环境</span></div>
                             <div class="terminal-output">
-🦞 VulnClaw 环境检查<br><br>
-&nbsp;&nbsp;Python: 3.14.4 &nbsp;&nbsp;Node.js: v24.14.1 &nbsp;&nbsp;npx: 已安装 &nbsp;&nbsp;nmap: 已安装<br><br>
-LLM 配置:<br>
-&nbsp;&nbsp;Provider: minimax &nbsp;&nbsp;API Key: 已设置 &nbsp;&nbsp;Model: MiniMax-M2.7<br><br>
-MCP 服务:<br>
-&nbsp;&nbsp;fetch: 已启用 [P0] &nbsp;&nbsp;memory: 已启用 [P0] &nbsp;&nbsp;chrome-devtools: 已启用 [P0]<br>
-&nbsp;&nbsp;burp: 已启用 [P0] &nbsp;&nbsp;frida-mcp: 已启用 [P1] &nbsp;&nbsp;jadx: 已启用 [P1]<br><br>
+🦞 VulnClaw 环境检查
+
+  Python: 3.14.4   Node.js: v24.14.1   npx: 已安装   nmap: 已安装
+
+LLM 配置:
+  Provider: minimax   API Key: 已设置   Model: MiniMax-M2.7
+
+MCP 服务:
+  fetch: 已启用 [P0]   memory: 已启用 [P0]   chrome-devtools: 已启用 [P0]
+  burp: 已启用 [P0]   frida-mcp: 已启用 [P1]   jadx: 已启用 [P1]
+
 ✅ 环境就绪，运行 vulnclaw 开始
                             </div>
                         </div>
@@ -373,61 +472,113 @@ MCP 服务:<br>
 
     <!-- Pentest Flow Section -->
     <section id="flow" class="flow-section">
+        <div class="flow-particles" id="flowParticles"></div>
         <div class="container">
             <div class="row">
-                <div class="col-12 text-center">
-                    <h2 class="section-title">自主渗透工作流</h2>
-                    <p class="section-subtitle">LLM Agent 驱动的多轮渗透循环，发现即利用，利用即报告</p>
+                <div class="col-12">
+                    <div class="section-header text-center" data-aos="fade-up">
+                        <span class="section-tag">WORKFLOW</span>
+                        <h2 class="section-title">
+                            <span class="title-word">自主渗透</span>
+                            <span class="title-word title-accent">工作流</span>
+                        </h2>
+                        <p class="section-subtitle">LLM Agent 驱动的多轮渗透循环，发现即利用，利用即报告</p>
+                    </div>
                 </div>
             </div>
             <div class="flow-container">
-                <div class="flow-line"></div>
+                <div class="flow-connector">
+                    <svg class="flow-svg" viewBox="0 0 1200 100" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="flowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:#ff2a2a;stop-opacity:1" />
+                                <stop offset="50%" style="stop-color:#ff6b35;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#ff2a2a;stop-opacity:1" />
+                            </linearGradient>
+                            <filter id="glow">
+                                <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                                <feMerge>
+                                    <feMergeNode in="coloredBlur"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+                        </defs>
+                        <path class="flow-path" d="M 50 50 Q 150 20, 250 50 T 450 50 T 650 50 T 850 50 T 1050 50 T 1150 50" 
+                              fill="none" stroke="url(#flowGradient)" stroke-width="2" filter="url(#glow)"/>
+                        <circle class="flow-particle" r="4" fill="#ff2a2a" filter="url(#glow)">
+                            <animateMotion dur="4s" repeatCount="indefinite" path="M 50 50 Q 150 20, 250 50 T 450 50 T 650 50 T 850 50 T 1050 50 T 1150 50"/>
+                        </circle>
+                        <circle class="flow-particle" r="3" fill="#ff6b35" filter="url(#glow)">
+                            <animateMotion dur="4s" begin="1s" repeatCount="indefinite" path="M 50 50 Q 150 20, 250 50 T 450 50 T 650 50 T 850 50 T 1050 50 T 1150 50"/>
+                        </circle>
+                        <circle class="flow-particle" r="2" fill="#ff2a2a" filter="url(#glow)">
+                            <animateMotion dur="4s" begin="2s" repeatCount="indefinite" path="M 50 50 Q 150 20, 250 50 T 450 50 T 650 50 T 850 50 T 1050 50 T 1150 50"/>
+                        </circle>
+                    </svg>
+                </div>
                 <div class="row g-4">
                     <div class="col-lg-2 col-md-4 col-6">
-                        <div class="flow-step">
-                            <div class="flow-icon"><i class="fas fa-search"></i></div>
+                        <div class="flow-step" data-aos="fade-up" data-aos-delay="0">
+                            <div class="flow-icon-wrapper">
+                                <div class="flow-icon"><i class="fas fa-search"></i></div>
+                            </div>
                             <h5>信息收集</h5>
                             <p>端口扫描、指纹识别<br>目录枚举、指纹分析</p>
                         </div>
                     </div>
                     <div class="col-lg-2 col-md-4 col-6">
-                        <div class="flow-step">
-                            <div class="flow-icon"><i class="fas fa-bug"></i></div>
+                        <div class="flow-step" data-aos="fade-up" data-aos-delay="100">
+                            <div class="flow-icon-wrapper">
+                                <div class="flow-icon"><i class="fas fa-bug"></i></div>
+                            </div>
                             <h5>漏洞发现</h5>
                             <p>CVE 匹配、Web 漏洞<br>配置缺陷、逻辑漏洞</p>
                         </div>
                     </div>
                     <div class="col-lg-2 col-md-4 col-6">
-                        <div class="flow-step">
-                            <div class="flow-icon"><i class="fas fa-fire"></i></div>
+                        <div class="flow-step" data-aos="fade-up" data-aos-delay="200">
+                            <div class="flow-icon-wrapper">
+                                <div class="flow-icon"><i class="fas fa-fire"></i></div>
+                            </div>
                             <h5>漏洞利用</h5>
                             <p>PoC 构造、WAF 绕过<br>命令执行、权限获取</p>
                         </div>
                     </div>
                     <div class="col-lg-2 col-md-4 col-6">
-                        <div class="flow-step">
-                            <div class="flow-icon"><i class="fas fa-user-secret"></i></div>
+                        <div class="flow-step" data-aos="fade-up" data-aos-delay="300">
+                            <div class="flow-icon-wrapper">
+                                <div class="flow-icon"><i class="fas fa-user-secret"></i></div>
+                            </div>
                             <h5>后渗透</h5>
                             <p>内网探测、横向移动<br>凭据窃取、权限维持</p>
                         </div>
                     </div>
                     <div class="col-lg-2 col-md-4 col-6">
-                        <div class="flow-step">
-                            <div class="flow-icon"><i class="fas fa-file-code"></i></div>
+                        <div class="flow-step" data-aos="fade-up" data-aos-delay="400">
+                            <div class="flow-icon-wrapper">
+                                <div class="flow-icon"><i class="fas fa-file-code"></i></div>
+                            </div>
                             <h5>报告生成</h5>
                             <p>Markdown 结构化报告<br>修复建议、风险评级</p>
                         </div>
                     </div>
                     <div class="col-lg-2 col-md-4 col-6">
-                        <div class="flow-step">
-                            <div class="flow-icon"><i class="fab fa-python"></i></div>
+                        <div class="flow-step" data-aos="fade-up" data-aos-delay="500">
+                            <div class="flow-icon-wrapper">
+                                <div class="flow-icon"><i class="fab fa-python"></i></div>
+                            </div>
                             <h5>PoC 输出</h5>
                             <p>Python PoC 脚本<br>可复现漏洞验证</p>
                         </div>
                     </div>
                 </div>
-                <div class="flow-loop-text">
-                    <i class="fas fa-sync-alt me-1"></i> LLM Agent 自主循环 · 自动阶段切换 · Ctrl+C 中断
+                <div class="flow-loop-text" data-aos="fade-up">
+                    <div class="loop-badge">
+                        <div class="loop-icon">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <span>LLM Agent 自主循环 · 自动阶段切换 · Ctrl+C 中断</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -435,67 +586,104 @@ MCP 服务:<br>
 
     <!-- Ecosystem Section -->
     <section id="ecosystem" class="ecosystem">
-        <div class="glow-orb" style="width: 400px; height: 400px; background: var(--lobster-red); top: 30%; left: -100px; filter: blur(90px); opacity: 0.08;"></div>
+        <div class="ecosystem-bg-grid"></div>
+        <div class="ecosystem-particles">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+        </div>
         <div class="container">
             <div class="row">
-                <div class="col-12 text-center">
-                    <h2 class="section-title">技术生态</h2>
-                    <p class="section-subtitle">兼容所有 OpenAI 协议模型，集成主流安全工具</p>
+                <div class="col-12">
+                    <div class="section-header text-center" data-aos="fade-up">
+                        <span class="section-tag">ECOSYSTEM</span>
+                        <h2 class="section-title">
+                            <span class="title-word">技术</span>
+                            <span class="title-word title-accent">生态</span>
+                        </h2>
+                        <p class="section-subtitle">兼容所有 OpenAI 协议模型，集成主流安全工具</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Key Numbers -->
-            <div class="row key-numbers mt-5">
+            <div class="row key-numbers">
                 <div class="col-lg-2 col-md-4 col-6">
-                    <div class="key-num-item">
-                        <span class="key-num">8</span>
+                    <div class="key-num-item neon-number" data-count="8" data-aos="zoom-in" data-aos-delay="0">
+                        <div class="key-num-wrapper">
+                            <span class="key-num">0</span>
+                            <span class="key-suffix">+</span>
+                        </div>
                         <span class="key-label">LLM Provider</span>
+                        <div class="neon-glow"></div>
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-4 col-6">
-                    <div class="key-num-item">
-                        <span class="key-num">11</span>
+                    <div class="key-num-item neon-number" data-count="11" data-aos="zoom-in" data-aos-delay="100">
+                        <div class="key-num-wrapper">
+                            <span class="key-num">0</span>
+                            <span class="key-suffix">+</span>
+                        </div>
                         <span class="key-label">MCP 服务</span>
+                        <div class="neon-glow"></div>
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-4 col-6">
-                    <div class="key-num-item">
-                        <span class="key-num">20</span>
+                    <div class="key-num-item neon-number" data-count="20" data-aos="zoom-in" data-aos-delay="200">
+                        <div class="key-num-wrapper">
+                            <span class="key-num">0</span>
+                            <span class="key-suffix">+</span>
+                        </div>
                         <span class="key-label">渗透 Skill</span>
+                        <div class="neon-glow"></div>
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-4 col-6">
-                    <div class="key-num-item">
-                        <span class="key-num">29</span>
+                    <div class="key-num-item neon-number" data-count="29" data-aos="zoom-in" data-aos-delay="300">
+                        <div class="key-num-wrapper">
+                            <span class="key-num">0</span>
+                            <span class="key-suffix">+</span>
+                        </div>
                         <span class="key-label">编解码工具</span>
+                        <div class="neon-glow"></div>
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-4 col-6">
-                    <div class="key-num-item">
-                        <span class="key-num">138</span>
+                    <div class="key-num-item neon-number" data-count="138" data-aos="zoom-in" data-aos-delay="400">
+                        <div class="key-num-wrapper">
+                            <span class="key-num">0</span>
+                            <span class="key-suffix">+</span>
+                        </div>
                         <span class="key-label">参考文档</span>
+                        <div class="neon-glow"></div>
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-4 col-6">
-                    <div class="key-num-item">
-                        <span class="key-num">188</span>
+                    <div class="key-num-item neon-number" data-count="188" data-aos="zoom-in" data-aos-delay="500">
+                        <div class="key-num-wrapper">
+                            <span class="key-num">0</span>
+                            <span class="key-suffix">+</span>
+                        </div>
                         <span class="key-label">测试用例</span>
+                        <div class="neon-glow"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Provider Grid -->
-            <div class="provider-grid mt-5">
-                <h4 class="provider-title">支持的 LLM Provider</h4>
+            <div class="provider-grid" data-aos="fade-up">
+                <h4 class="provider-title">
+                    <span class="provider-line"></span>
+                    <span>支持的 LLM Provider</span>
+                    <span class="provider-line"></span>
+                </h4>
                 <div class="providers">
-                    <div class="provider-chip">OpenAI</div>
-                    <div class="provider-chip">MiniMax</div>
-                    <div class="provider-chip">DeepSeek</div>
-                    <div class="provider-chip">智谱 GLM</div>
-                    <div class="provider-chip">Moonshot</div>
-                    <div class="provider-chip">通义千问</div>
-                    <div class="provider-chip">SiliconFlow</div>
-                    <div class="provider-chip provider-chip-custom">自定义</div>
+                    <div class="provider-chip"><i class="fas fa-robot"></i> OpenAI</div>
+                    <div class="provider-chip"><i class="fas fa-bolt"></i> MiniMax</div>
+                    <div class="provider-chip"><i class="fas fa-water"></i> DeepSeek</div>
+                    <div class="provider-chip"><i class="fas fa-star"></i> 智谱 GLM</div>
+                    <div class="provider-chip"><i class="fas fa-moon"></i> Moonshot</div>
+                    <div class="provider-chip"><i class="fas fa-cloud"></i> 通义千问</div>
+                    <div class="provider-chip"><i class="fas fa-microchip"></i> SiliconFlow</div>
+                    <div class="provider-chip provider-chip-custom"><i class="fas fa-cog"></i> 自定义</div>
                 </div>
             </div>
         </div>
@@ -503,19 +691,44 @@ MCP 服务:<br>
 
     <!-- CTA Section -->
     <section class="cta-section">
-        <div class="glow-orb" style="width: 300px; height: 300px; background: var(--lobster-red); top: -50px; right: 20%; filter: blur(80px); opacity: 0.1;"></div>
+        <div class="cta-pulse-ring"></div>
+        <div class="cta-pulse-ring cta-pulse-ring-2"></div>
+        <div class="cta-pulse-ring cta-pulse-ring-3"></div>
         <div class="container">
-            <div class="cta-box">
-                <h2>准备开始？</h2>
-                <p>开源免费，MIT 许可证。立即安装，体验 AI 渗透测试。</p>
-                <div class="cta-buttons">
-                    <button class="btn btn-primary btn-lg" onclick="copyInstall()">
-                        <i class="fas fa-terminal me-2"></i>
-                        <span id="ctaBtnText">pip install vulnclaw</span>
-                    </button>
-                    <a href="https://github.com/Unclecheng-li/VulnClaw" target="_blank" class="btn btn-outline-ghost btn-lg">
-                        <i class="fab fa-github me-2"></i> View on GitHub
-                    </a>
+            <div class="cta-box" data-aos="zoom-in">
+                <div class="cta-glow"></div>
+                <div class="cta-content">
+                    <div class="cta-badge">
+                        <span class="cta-badge-dot"></span>
+                        <span>READY TO DEPLOY</span>
+                    </div>
+                    <h2>准备开始？</h2>
+                    <p>开源免费，MIT 许可证。立即安装，体验 AI 渗透测试。</p>
+                    <div class="cta-buttons">
+                        <button class="btn btn-primary btn-lg magnetic-btn" onclick="copyInstall()">
+                            <i class="fas fa-terminal me-2"></i>
+                            <span id="ctaBtnText">pip install vulnclaw</span>
+                        </button>
+                        <a href="https://github.com/Unclecheng-li/VulnClaw" target="_blank" class="btn btn-outline-ghost btn-lg magnetic-btn">
+                            <i class="fab fa-github me-2"></i> View on GitHub
+                        </a>
+                    </div>
+                    <div class="cta-stats">
+                        <div class="cta-stat">
+                            <i class="fas fa-download"></i>
+                            <span>PyPI 安装</span>
+                        </div>
+                        <div class="cta-stat-divider"></div>
+                        <div class="cta-stat">
+                            <i class="fas fa-code-branch"></i>
+                            <span>开源贡献</span>
+                        </div>
+                        <div class="cta-stat-divider"></div>
+                        <div class="cta-stat">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>MIT 协议</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -527,13 +740,16 @@ MCP 服务:<br>
             <div class="row">
                 <div class="col-lg-5">
                     <div class="footer-brand">
-                        <img src="assets/logo.png" alt="VulnClaw" class="footer-logo">
+                        <div class="footer-logo-wrapper">
+                            <img src="assets/logo.png" alt="VulnClaw" class="footer-logo">
+                            <div class="footer-logo-glow"></div>
+                        </div>
                         <p class="mt-3">AI 驱动的渗透测试 CLI 工具。<br>说人话，打漏洞。让每一次渗透都有章可循。</p>
                         <div class="author-info">
-                            <i class="fas fa-user me-1"></i>
+                            <i class="fas fa-user me-2"></i>
                             <span>作者：<strong>网络小白_Uncle城</strong></span>
                         </div>
-                        <div class="footer-badges mt-2">
+                        <div class="footer-badges mt-3">
                             <span class="footer-badge"><i class="fab fa-python me-1"></i> Python 3.10+</span>
                             <span class="footer-badge"><i class="fas fa-shield-alt me-1"></i> MIT License</span>
                             <span class="footer-badge"><i class="fas fa-star me-1"></i> Open Source</span>
@@ -558,7 +774,6 @@ MCP 服务:<br>
                 </div>
             </div>
 
-            <!-- Security Notice -->
             <div class="security-notice">
                 <i class="fas fa-exclamation-triangle me-2"></i>
                 <strong>安全声明：</strong>VulnClaw 仅用于已授权的安全测试、CTF 竞赛、安全教学和红队演练。
@@ -569,16 +784,18 @@ MCP 服务:<br>
             <div class="row">
                 <div class="col-12 text-center">
                     <p class="footer-bottom">
-                        © 2026 VulnClaw · MIT License · Made with 🦞 by 网络小白_Uncle城
+                        <span class="footer-brand-text">VulnClaw</span>
+                        <span class="footer-separator">·</span>
+                        <span>MIT License</span>
+                        <span class="footer-separator">·</span>
+                        <span>Made with <span class="lobster-emoji">🦞</span> by 网络小白_Uncle城</span>
                     </p>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JS -->
     <script src="script.js"></script>
 </body>
 </html>
