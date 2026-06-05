@@ -43,7 +43,7 @@
             <div class="d-flex align-items-center justify-content-between">
                 <div class="top-bar-marquee">
                     <span class="marquee-content">
-                        <span class="marquee-item"><i class="fas fa-terminal"></i> VulnClaw v0.2.7</span>
+                        <span class="marquee-item"><i class="fas fa-terminal"></i> VulnClaw v0.2.9</span>
                         <span class="marquee-separator">//</span>
                         <span class="marquee-item"><i class="fas fa-bolt"></i> AI-Powered Pentest</span>
                         <span class="marquee-separator">//</span>
@@ -59,7 +59,7 @@
                         <span class="marquee-separator">//</span>
                         <span class="marquee-item"><i class="fas fa-code"></i> Open Source</span>
                         <span class="marquee-separator">//</span>
-                        <span class="marquee-item"><i class="fas fa-terminal"></i> VulnClaw v0.2.7</span>
+                        <span class="marquee-item"><i class="fas fa-terminal"></i> VulnClaw v0.2.9</span>
                         <span class="marquee-separator">//</span>
                         <span class="marquee-item"><i class="fas fa-bolt"></i> AI-Powered Pentest</span>
                         <span class="marquee-separator">//</span>
@@ -94,12 +94,14 @@
 
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><a class="nav-link" href="#demo">演示</a></li>
                         <li class="nav-item"><a class="nav-link" href="#features">特性</a></li>
                         <li class="nav-item"><a class="nav-link" href="#quickstart">快速开始</a></li>
                         <li class="nav-item"><a class="nav-link" href="#flow">工作流</a></li>
                         <li class="nav-item"><a class="nav-link" href="#ecosystem">生态</a></li>
                         <li class="nav-item"><a class="nav-link" href="#cta">下载</a></li>
                         <li class="nav-item"><a class="nav-link" href="#stats">统计</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#community">社区</a></li>
                         <li class="nav-item">
                             <a class="nav-link" href="https://github.com/Unclecheng-li/VulnClaw" target="_blank">
                                 <i class="fab fa-github"></i>
@@ -123,7 +125,7 @@
                     <div class="col-lg-7">
                         <div class="hero-content">
                             <div class="hero-badge" data-aos="fade-down">
-                                <span class="badge-item badge-pulse"><i class="fas fa-circle text-success me-2" style="font-size:8px;"></i>v0.2.7 MVP</span>
+                                <span class="badge-item badge-pulse"><i class="fas fa-circle text-success me-2" style="font-size:8px;"></i>v0.2.9 MVP</span>
                                 <span class="badge-item"><i class="fab fa-python me-2"></i>Python</span>
                                 <span class="badge-item"><i class="fas fa-shield-alt me-2"></i>MIT</span>
                             </div>
@@ -213,11 +215,11 @@
                                 </div>
                                 <div class="terminal-body" id="terminalBody">
                                     <div class="terminal-line"><span class="prompt">$</span><span class="cmd"> pip install vulnclaw</span></div>
-                                    <div class="terminal-line output-success">Successfully installed vulnclaw-0.2.7</div>
+                                    <div class="terminal-line output-success">Successfully installed vulnclaw-0.2.9</div>
                                     <div class="terminal-line"><span class="prompt">$</span><span class="cmd"> vulnclaw config set llm.api_key sk-***</span></div>
                                     <div class="terminal-line output-comment"># 配置完成，开始渗透测试</div>
                                     <div class="terminal-line"><span class="prompt">$</span><span class="cmd"> vulnclaw</span></div>
-                                    <div class="terminal-line output-muted">🦞 VulnClaw v0.2.7 — AI 渗透测试助手</div>
+                                    <div class="terminal-line output-muted">🦞 VulnClaw v0.2.9 — AI 渗透测试助手</div>
                                     <div class="terminal-line output-muted">目标未设置 | 工具链就绪 | 知识库已加载</div>
                                     <div class="terminal-line"><span class="prompt">🦞</span><span class="cmd"> 对 http://target.example.com 进行渗透测试</span></div>
                                     <div class="terminal-line output-info">[*] 进入自主渗透模式，按 Ctrl+C 可随时中断</div>
@@ -249,6 +251,35 @@
                 <div class="wheel"></div>
             </div>
             <span>SCROLL</span>
+        </div>
+    </section>
+
+    <!-- Product Demo Video Section -->
+    <section id="demo" class="demo-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-header text-center" data-aos="fade-up">
+                        <span class="section-tag">DEMO</span>
+                        <h2 class="section-title">
+                            <span class="title-word">实战</span>
+                            <span class="title-word title-accent">演示</span>
+                        </h2>
+                        <p class="section-subtitle">VulnClaw 的首份实战报告，仅 12 轮对话找到 flag，见证 AI 渗透测试全流程</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <div class="video-wrapper" data-aos="zoom-in">
+                        <div class="video-glow"></div>
+                        <video controls poster="assets/logo.png" class="product-video">
+                            <source src="assets/VulnClaw's first battle report on practical experience.mp4" type="video/mp4">
+                            您的浏览器不支持 HTML5 视频播放。
+                        </video>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -755,34 +786,73 @@ MCP 服务:
                 <div class="col-lg-4 col-md-4">
                     <div class="stats-card" data-aos="fade-up" data-aos-delay="0">
                         <div class="stats-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="stats-number-wrapper">
-                            <span class="stats-number" id="visitorCount">0</span>
-                        </div>
-                        <span class="stats-label">累计访问人数</span>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-4">
-                    <div class="stats-card" data-aos="fade-up" data-aos-delay="100">
-                        <div class="stats-icon">
-                            <i class="fas fa-download"></i>
-                        </div>
-                        <div class="stats-number-wrapper">
-                            <span class="stats-number" id="downloadCount">0</span>
-                        </div>
-                        <span class="stats-label">累计下载次数</span>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-4">
-                    <div class="stats-card" data-aos="fade-up" data-aos-delay="200">
-                        <div class="stats-icon">
                             <i class="fab fa-github"></i>
                         </div>
                         <div class="stats-number-wrapper">
                             <span class="stats-number" id="githubStars">0</span>
                         </div>
                         <span class="stats-label">GitHub Stars</span>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="stats-card" data-aos="fade-up" data-aos-delay="100">
+                        <div class="stats-icon">
+                            <i class="fas fa-code-branch"></i>
+                        </div>
+                        <div class="stats-number-wrapper">
+                            <span class="stats-number" id="githubForks">0</span>
+                        </div>
+                        <span class="stats-label">GitHub Forks</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community Section -->
+    <section id="community" class="community-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-header text-center" data-aos="fade-up">
+                        <span class="section-tag">COMMUNITY</span>
+                        <h2 class="section-title">
+                            <span class="title-word">加入</span>
+                            <span class="title-word title-accent">社区</span>
+                        </h2>
+                        <p class="section-subtitle">与更多安全爱好者一起交流、分享与成长</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-4 justify-content-center">
+                <div class="col-lg-5 col-md-6">
+                    <div class="community-card" data-aos="fade-up" data-aos-delay="0">
+                        <div class="card-border-glow"></div>
+                        <div class="community-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h3>产品体验交流群</h3>
+                        <p class="community-desc">欢迎加入讨论分享，获取最新产品动态与使用技巧</p>
+                        <div class="qr-wrapper">
+                            <img src="assets/VulnClaw产品体验交流群.jpg" alt="VulnClaw 产品体验交流群" class="qr-code">
+                            <div class="qr-glow"></div>
+                        </div>
+                        <span class="community-hint">QQ 群号：680166726</span>
+                    </div>
+                </div>
+                <div class="col-lg-5 col-md-6">
+                    <div class="community-card" data-aos="fade-up" data-aos-delay="100">
+                        <div class="card-border-glow"></div>
+                        <div class="community-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <h3>开发者群聊</h3>
+                        <p class="community-desc">加入我们，参与开源贡献与技术深度探讨</p>
+                        <div class="qr-wrapper">
+                            <img src="assets/VulnClaw开发者群聊.png" alt="VulnClaw 开发者群聊" class="qr-code">
+                            <div class="qr-glow"></div>
+                        </div>
+                        <span class="community-hint">QQ 群号：1065858551</span>
                     </div>
                 </div>
             </div>

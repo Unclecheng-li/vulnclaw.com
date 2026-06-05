@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initStats();
 });
 
+const STATS_API_BASE = 'https://stats.vulnclaw.com';
+
 // ============================================
 // 1. Custom Cursor
 // ============================================
@@ -709,157 +711,17 @@ function initFeatureCardTilt() {
 }
 
 // ============================================
-// 21. Statistics - Visitors, Downloads, GitHub Stars
+// 21. Statistics - Page Views, Download Clicks, GitHub Stars
 // ============================================
 function initStats() {
-    initVisitorCount();
-    initDownloadCount();
-    initGitHubStars();
+    initGitHubStats();
 }
 
-// Local storage helpers for stats
-function getLocalCount(key) {
-    try {
-        const val = localStorage.getItem(key);
-        return val ? parseInt(val) : 0;
-    } catch (e) {
-        return 0;
-    }
-}
-
-function setLocalCount(key, value) {
-    try {
-        localStorage.setItem(key, value.toString());
-    } catch (e) {}
-}
-
-// Visitor Count using localStorage + API fallback
-function initVisitorCount() {
-    const visitorEl = document.getElementById('visitorCount');
-    if (!visitorEl) return;
-
-    const localKey = 'vulnclaw_visitor_count';
-    const hasVisitedKey = 'vulnclaw_has_visited';
-
-    // Check if this is a new visit (session based)
-    const isNewVisit = !sessionStorage.getItem(hasVisitedKey);
-    if (isNewVisit) {
-        sessionStorage.setItem(hasVisitedKey, 'true');
-        // Increment local counter
-        const currentCount = getLocalCount(localKey) + 1;
-        setLocalCount(localKey, currentCount);
-    }
-
-    // Try to get count from API first, fallback to localStorage
-    const pageId = 'vulnclaw-com';
-
-    // Try multiple visitor counter APIs
-    tryFetchVisitorCount([
-        {
-            url: `https://api.countapi.xyz/hit/${pageId}/visits`,
-            parser: (data) => data.value
-        },
-        {
-            url: `https://visitor-badge.laobi.icu/badge?page_id=${encodeURIComponent(pageId)}`,
-            parser: (text) => {
-                const match = text.match(/>([\d,]+)</);
-                return match ? parseInt(match[1].replace(/,/g, '')) : null;
-            },
-            isText: true
-        }
-    ], visitorEl, localKey);
-}
-
-function tryFetchVisitorCount(apis, element, localKey, index = 0) {
-    if (index >= apis.length) {
-        // All APIs failed, use localStorage
-        const localCount = getLocalCount(localKey);
-        animateNumber(element, 0, Math.max(localCount, 1), 2000);
-        return;
-    }
-
-    const api = apis[index];
-    fetch(api.url)
-        .then(response => api.isText ? response.text() : response.json())
-        .then(data => {
-            const count = api.parser(data);
-            if (count !== null && count !== undefined) {
-                // Update localStorage with server count if it's higher
-                const localCount = getLocalCount(localKey);
-                const finalCount = Math.max(count, localCount);
-                setLocalCount(localKey, finalCount);
-                animateNumber(element, 0, finalCount, 2000);
-            } else {
-                throw new Error('Invalid count');
-            }
-        })
-        .catch(() => {
-            tryFetchVisitorCount(apis, element, localKey, index + 1);
-        });
-}
-
-// Download Count using localStorage + API fallback
-function initDownloadCount() {
-    const downloadEl = document.getElementById('downloadCount');
-    if (!downloadEl) return;
-
-    const localKey = 'vulnclaw_download_count';
-    const localCount = getLocalCount(localKey);
-
-    // Try API first, fallback to localStorage
-    const namespace = 'vulnclaw-website';
-    const key = 'downloads';
-
-    fetch(`https://api.countapi.xyz/get/${namespace}/${key}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.value !== undefined) {
-                const finalCount = Math.max(data.value, localCount);
-                setLocalCount(localKey, finalCount);
-                animateNumber(downloadEl, 0, finalCount, 2000);
-            } else {
-                throw new Error('Invalid count');
-            }
-        })
-        .catch(() => {
-            // Use localStorage count
-            animateNumber(downloadEl, 0, Math.max(localCount, 0), 2000);
-        });
-}
-
-// Increment download count when install button is clicked
-function trackDownload() {
-    const localKey = 'vulnclaw_download_count';
-    const currentCount = getLocalCount(localKey) + 1;
-    setLocalCount(localKey, currentCount);
-
-    // Update display
-    const downloadEl = document.getElementById('downloadCount');
-    if (downloadEl) {
-        downloadEl.textContent = currentCount;
-    }
-
-    // Also try to update API
-    const namespace = 'vulnclaw-website';
-    const key = 'downloads';
-
-    fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.value !== undefined) {
-                setLocalCount(localKey, data.value);
-                if (downloadEl) {
-                    downloadEl.textContent = data.value;
-                }
-            }
-        })
-        .catch(() => {});
-}
-
-// GitHub Stars using GitHub API
-function initGitHubStars() {
+// GitHub Stars & Forks using GitHub API
+function initGitHubStats() {
     const starsEl = document.getElementById('githubStars');
-    if (!starsEl) return;
+    const forksEl = document.getElementById('githubForks');
+    if (!starsEl || !forksEl) return;
 
     const owner = 'Unclecheng-li';
     const repo = 'VulnClaw';
@@ -873,8 +735,12 @@ function initGitHubStars() {
             if (data.stargazers_count !== undefined) {
                 animateNumber(starsEl, 0, data.stargazers_count, 2000);
             }
+            if (data.forks_count !== undefined) {
+                animateNumber(forksEl, 0, data.forks_count, 2000);
+            }
         })
         .catch(() => {
             starsEl.textContent = '---';
+            forksEl.textContent = '---';
         });
 }

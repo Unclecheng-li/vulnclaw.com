@@ -1565,6 +1565,57 @@ body:hover .cursor-outline {
 }
 
 /* ============================================
+   DEMO VIDEO SECTION
+   ============================================ */
+.demo-section {
+    padding: 120px 0;
+    background: linear-gradient(180deg, var(--terminal-black), var(--dark-bg));
+    position: relative;
+    overflow: hidden;
+}
+
+.demo-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--lobster-red), transparent);
+    opacity: 0.3;
+}
+
+.video-wrapper {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--terminal-border);
+    background: var(--terminal-bg);
+    box-shadow: 0 0 60px rgba(255, 42, 42, 0.1);
+}
+
+.video-glow {
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(135deg, var(--lobster-red), var(--lobster-orange));
+    border-radius: 18px;
+    opacity: 0.15;
+    z-index: -1;
+    filter: blur(20px);
+}
+
+.product-video {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 16px;
+    background: var(--terminal-black);
+}
+
+/* ============================================
    FLOW - DYNAMIC CONNECTIONS & PARTICLE STREAM
    ============================================ */
 .flow-section {
@@ -2454,6 +2505,152 @@ body:hover .cursor-outline {
     .stats-card {
         padding: 36px 20px;
     }
+}
+
+/* ============================================
+   COMMUNITY SECTION
+   ============================================ */
+.community-section {
+    padding: 140px 0;
+    background: linear-gradient(180deg, var(--terminal-black), var(--dark-bg));
+    position: relative;
+    overflow: hidden;
+}
+
+.community-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--lobster-red), transparent);
+    opacity: 0.3;
+}
+
+.community-card {
+    text-align: center;
+    padding: 40px 30px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+}
+
+.community-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--lobster-red), transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.community-card:hover::before {
+    opacity: 1;
+}
+
+.community-card:hover {
+    border-color: rgba(255, 42, 42, 0.3);
+    transform: translateY(-12px) scale(1.02);
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.5),
+        0 0 60px rgba(255, 42, 42, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.community-card .community-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, rgba(255, 42, 42, 0.15), rgba(255, 107, 53, 0.08));
+    border: 1px solid rgba(255, 42, 42, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: var(--lobster-red);
+    margin: 0 auto 20px;
+    transition: all 0.4s ease;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(255, 42, 42, 0.1);
+}
+
+.community-card:hover .community-icon {
+    transform: scale(1.15);
+    box-shadow: 0 0 40px rgba(255, 42, 42, 0.3), 0 0 80px rgba(255, 42, 42, 0.1);
+    border-color: rgba(255, 42, 42, 0.4);
+    background: linear-gradient(135deg, rgba(255, 42, 42, 0.25), rgba(255, 107, 53, 0.15));
+}
+
+.community-card h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.community-desc {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 24px;
+    line-height: 1.6;
+}
+
+.qr-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 16px;
+}
+
+.qr-code {
+    max-width: 220px;
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    display: block;
+    position: relative;
+    z-index: 2;
+    border: 1px solid var(--glass-border);
+    background: #fff;
+    padding: 4px;
+}
+
+.qr-glow {
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    background: linear-gradient(135deg, var(--lobster-red), var(--lobster-orange));
+    border-radius: 16px;
+    opacity: 0.12;
+    z-index: 1;
+    filter: blur(12px);
+    transition: opacity 0.4s ease;
+}
+
+.community-card:hover .qr-glow {
+    opacity: 0.25;
+}
+
+.community-hint {
+    display: block;
+    font-size: 13px;
+    color: var(--text-secondary);
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+}
+
+.community-card:hover .community-hint {
+    color: rgba(255, 255, 255, 0.8);
 }
 
 /* ============================================

@@ -1,0 +1,11 @@
+name = "vulnclaw-stats"
+main = "worker.js"
+compatibility_date = "2026-05-24"
+
+[vars]
+ALLOWED_ORIGIN = "https://vulnclaw.com"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "vulnclaw_stats"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
