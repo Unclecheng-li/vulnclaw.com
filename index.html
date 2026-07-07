@@ -43,7 +43,7 @@
             <div class="d-flex align-items-center justify-content-between">
                 <div class="top-bar-marquee">
                     <span class="marquee-content">
-                        <span class="marquee-item"><i class="fas fa-terminal"></i> VulnClaw v0.3.2</span>
+                        <span class="marquee-item"><i class="fas fa-terminal"></i> VulnClaw v0.3.3</span>
                         <span class="marquee-separator">//</span>
                         <span class="marquee-item"><i class="fas fa-bolt"></i> AI-Powered Pentest</span>
                         <span class="marquee-separator">//</span>
@@ -59,7 +59,7 @@
                         <span class="marquee-separator">//</span>
                         <span class="marquee-item"><i class="fas fa-code"></i> Open Source</span>
                         <span class="marquee-separator">//</span>
-                        <span class="marquee-item"><i class="fas fa-terminal"></i> VulnClaw v0.3.2</span>
+                        <span class="marquee-item"><i class="fas fa-terminal"></i> VulnClaw v0.3.3</span>
                         <span class="marquee-separator">//</span>
                         <span class="marquee-item"><i class="fas fa-bolt"></i> AI-Powered Pentest</span>
                         <span class="marquee-separator">//</span>
@@ -125,7 +125,7 @@
                     <div class="col-lg-7">
                         <div class="hero-content">
                             <div class="hero-badge" data-aos="fade-down">
-                                <span class="badge-item badge-pulse"><i class="fas fa-circle text-success me-2" style="font-size:8px;"></i>v0.3.2 MVP</span>
+                                <span class="badge-item badge-pulse"><i class="fas fa-circle text-success me-2" style="font-size:8px;"></i>v0.3.3 MVP</span>
                                 <span class="badge-item"><i class="fab fa-python me-2"></i>Python</span>
                                 <span class="badge-item"><i class="fas fa-shield-alt me-2"></i>MIT</span>
                             </div>
@@ -168,7 +168,7 @@
                                     <span class="stat-label">LLM Provider</span>
                                 </div>
                                 <div class="stat-divider"></div>
-                                <div class="stat-item" data-count="12">
+                                <div class="stat-item" data-count="4">
                                     <div class="stat-number-wrapper">
                                         <span class="stat-number">0</span>
                                         <span class="stat-suffix">+</span>
@@ -215,11 +215,11 @@
                                 </div>
                                 <div class="terminal-body" id="terminalBody">
                                     <div class="terminal-line"><span class="prompt">$</span><span class="cmd"> pip install vulnclaw</span></div>
-                                    <div class="terminal-line output-success">Successfully installed vulnclaw-0.3.2</div>
+                                    <div class="terminal-line output-success">Successfully installed vulnclaw-0.3.3</div>
                                     <div class="terminal-line"><span class="prompt">$</span><span class="cmd"> vulnclaw config set llm.api_key sk-***</span></div>
                                     <div class="terminal-line output-comment"># 配置完成，开始渗透测试</div>
                                     <div class="terminal-line"><span class="prompt">$</span><span class="cmd"> vulnclaw</span></div>
-                                    <div class="terminal-line output-muted">🦞 VulnClaw v0.3.2 — AI 渗透测试助手</div>
+                                    <div class="terminal-line output-muted">🦞 VulnClaw v0.3.3 — AI 渗透测试助手</div>
                                     <div class="terminal-line output-muted">目标未设置 | 工具链就绪 | 知识库已加载</div>
                                     <div class="terminal-line"><span class="prompt">🦞</span><span class="cmd"> 对 http://target.example.com 进行渗透测试</span></div>
                                     <div class="terminal-line output-info">[*] 进入自主渗透模式，按 Ctrl+C 可随时中断</div>
@@ -327,11 +327,11 @@
                             <i class="fas fa-puzzle-piece"></i>
                         </div>
                         <h3>MCP 工具链</h3>
-                        <p>12 个安全 MCP 服务 + 23 个工具定义，开箱即用。</p>
+                        <p>4 个 MCP 服务：fetch / memory 本地开箱即用，Chrome DevTools / Burp 对接外部 MCP。</p>
                         <ul class="feature-list">
-                            <li>fetch / Burp / Chrome DevTools</li>
-                            <li>Frida / ADB / JADX</li>
-                            <li>IDA Pro 二进制逆向</li>
+                            <li>fetch / memory 本地实现</li>
+                            <li>Chrome DevTools 浏览器自动化</li>
+                            <li>Burp HTTP 抓包重放</li>
                         </ul>
                         <div class="card-border-glow"></div>
                     </div>
@@ -491,8 +491,8 @@ LLM 配置:
   Provider: minimax   API Key: 已设置   Model: MiniMax-M2.7
 
 MCP 服务:
-  fetch: 已启用 [P0]   memory: 已启用 [P0]   chrome-devtools: 已启用 [P0]
-  burp: 已启用 [P0]   frida-mcp: 已启用 [P1]   jadx: 已启用 [P1]
+  fetch: 已启用 [P0]   memory: 已启用 [P0]
+  chrome-devtools: 外部 MCP [P0]   burp: 外部 MCP [P0]
 
 ✅ 环境就绪，运行 vulnclaw 开始
                             </div>
@@ -651,7 +651,7 @@ MCP 服务:
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-4 col-6">
-                    <div class="key-num-item neon-number" data-count="12" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="key-num-item neon-number" data-count="4" data-aos="zoom-in" data-aos-delay="100">
                         <div class="key-num-wrapper">
                             <span class="key-num">0</span>
                             <span class="key-suffix">+</span>
