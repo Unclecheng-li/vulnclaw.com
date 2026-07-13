@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VulnClaw — AI 驱动的渗透测试 CLI 工具</title>
-    <meta name="description" content="VulnClaw 是一款 AI 驱动的渗透测试 CLI 工具，基于 LLM Agent + MCP 工具链 + 渗透 Skill 编排，自然语言输入即可完成信息收集→漏洞发现→漏洞利用→报告生成全流程。">
+    <meta name="description" content="VulnClaw 是一款 AI 驱动的渗透测试 CLI 工具，基于目标驱动求解引擎 + MCP 工具链 + 渗透 Skill 编排，自然语言输入即可完成 Reason→Explore→Fact→Reflect→Report 全流程。">
     <meta name="keywords" content="VulnClaw, AI, pentest, penetration testing, CLI, MCP, security, 渗透测试, 安全工具, CTF">
 
-    <meta property="og:title" content="VulnClaw — 说人话，打漏洞">
-    <meta property="og:description" content="AI 驱动的渗透测试 CLI 工具">
+    <meta property="og:title" content="VulnClaw — 目标驱动，证据级反幻觉渗透测试">
+    <meta property="og:description" content="AI 驱动的渗透测试 CLI 工具 · v0.4.1 Alpha">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://vulnclaw.com">
 
@@ -19,6 +19,59 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/png" href="assets/logo.png">
+
+    <style>
+    /* Docker info box — inline to avoid touching styles.css */
+    .docker-info-box {
+        background: rgba(255, 42, 42, 0.05);
+        border: 1px solid rgba(255, 42, 42, 0.25);
+        border-radius: 12px;
+        padding: 20px 28px;
+        position: relative;
+        overflow: hidden;
+        transition: border-color 0.3s ease;
+    }
+    .docker-info-box:hover {
+        border-color: rgba(255, 42, 42, 0.5);
+    }
+    .docker-info-box::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255,42,42,0.5), transparent);
+    }
+    .docker-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #ff6b35;
+        margin-bottom: 12px;
+    }
+    .docker-header i {
+        font-size: 1.4rem;
+        color: #2496ed;
+    }
+    .docker-code {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        color: #e0e0e0;
+        line-height: 1.8;
+        background: rgba(0, 0, 0, 0.3);
+        padding: 12px 16px;
+        border-radius: 8px;
+    }
+    .docker-code .code-prompt {
+        color: #ff2a2a;
+        font-weight: 700;
+        margin-right: 6px;
+    }
+    .docker-code .output-comment {
+        color: #6c757d;
+    }
+    </style>
 </head>
 <body>
 
@@ -43,7 +96,7 @@
             <div class="d-flex align-items-center justify-content-between">
                 <div class="top-bar-marquee">
                     <span class="marquee-content">
-                        <span class="marquee-item"><i class="fas fa-terminal"></i> VulnClaw v0.3.3</span>
+                        <span class="marquee-item"><i class="fas fa-terminal"></i> VulnClaw v0.4.1</span>
                         <span class="marquee-separator">//</span>
                         <span class="marquee-item"><i class="fas fa-bolt"></i> AI-Powered Pentest</span>
                         <span class="marquee-separator">//</span>
@@ -55,11 +108,15 @@
                         <span class="marquee-separator">//</span>
                         <span class="marquee-item"><i class="fas fa-network-wired"></i> MCP Protocol</span>
                         <span class="marquee-separator">//</span>
-                        <span class="marquee-item"><i class="fas fa-bug"></i> 21 Pentest Skills</span>
+                        <span class="marquee-item"><i class="fas fa-bug"></i> 23 Pentest Skills</span>
+                        <span class="marquee-separator">//</span>
+                        <span class="marquee-item"><i class="fas fa-crosshairs"></i> Goal-Driven Solver</span>
+                        <span class="marquee-separator">//</span>
+                        <span class="marquee-item"><i class="fas fa-shield-virus"></i> Anti-Hallucination</span>
                         <span class="marquee-separator">//</span>
                         <span class="marquee-item"><i class="fas fa-code"></i> Open Source</span>
                         <span class="marquee-separator">//</span>
-                        <span class="marquee-item"><i class="fas fa-terminal"></i> VulnClaw v0.3.3</span>
+                        <span class="marquee-item"><i class="fas fa-terminal"></i> VulnClaw v0.4.1</span>
                         <span class="marquee-separator">//</span>
                         <span class="marquee-item"><i class="fas fa-bolt"></i> AI-Powered Pentest</span>
                         <span class="marquee-separator">//</span>
@@ -125,7 +182,7 @@
                     <div class="col-lg-7">
                         <div class="hero-content">
                             <div class="hero-badge" data-aos="fade-down">
-                                <span class="badge-item badge-pulse"><i class="fas fa-circle text-success me-2" style="font-size:8px;"></i>v0.3.3 MVP</span>
+                                <span class="badge-item badge-pulse"><i class="fas fa-circle text-success me-2" style="font-size:8px;"></i>v0.4.1 Alpha</span>
                                 <span class="badge-item"><i class="fab fa-python me-2"></i>Python</span>
                                 <span class="badge-item"><i class="fas fa-shield-alt me-2"></i>MIT</span>
                             </div>
@@ -160,7 +217,7 @@
                             </div>
 
                             <div class="hero-stats" data-aos="fade-up" data-aos-delay="500">
-                                <div class="stat-item" data-count="13">
+                                <div class="stat-item" data-count="14">
                                     <div class="stat-number-wrapper">
                                         <span class="stat-number">0</span>
                                         <span class="stat-suffix">+</span>
@@ -176,7 +233,7 @@
                                     <span class="stat-label">MCP 服务</span>
                                 </div>
                                 <div class="stat-divider"></div>
-                                <div class="stat-item" data-count="21">
+                                <div class="stat-item" data-count="23">
                                     <div class="stat-number-wrapper">
                                         <span class="stat-number">0</span>
                                         <span class="stat-suffix">+</span>
@@ -215,25 +272,28 @@
                                 </div>
                                 <div class="terminal-body" id="terminalBody">
                                     <div class="terminal-line"><span class="prompt">$</span><span class="cmd"> pip install vulnclaw</span></div>
-                                    <div class="terminal-line output-success">Successfully installed vulnclaw-0.3.3</div>
+                                    <div class="terminal-line output-success">Successfully installed vulnclaw-0.4.1</div>
                                     <div class="terminal-line"><span class="prompt">$</span><span class="cmd"> vulnclaw config set llm.api_key sk-***</span></div>
                                     <div class="terminal-line output-comment"># 配置完成，开始渗透测试</div>
                                     <div class="terminal-line"><span class="prompt">$</span><span class="cmd"> vulnclaw</span></div>
-                                    <div class="terminal-line output-muted">🦞 VulnClaw v0.3.3 — AI 渗透测试助手</div>
+                                    <div class="terminal-line output-muted">🦞 VulnClaw v0.4.1 — AI 渗透测试助手</div>
                                     <div class="terminal-line output-muted">目标未设置 | 工具链就绪 | 知识库已加载</div>
                                     <div class="terminal-line"><span class="prompt">🦞</span><span class="cmd"> 对 http://target.example.com 进行渗透测试</span></div>
-                                    <div class="terminal-line output-info">[*] 进入自主渗透模式，按 Ctrl+C 可随时中断</div>
-                                    <div class="terminal-line output-section">── Round 1 ── 信息收集</div>
-                                    <div class="terminal-line output-success">[+] 开放端口: 22, 80, 443, 8080</div>
-                                    <div class="terminal-line output-success">[+] Web 指纹: Apache/2.4.62</div>
-                                    <div class="terminal-line output-section">── Round 2 ── 漏洞发现</div>
-                                    <div class="terminal-line output-success">[+] 发现 /manager/html (Tomcat Manager)</div>
-                                    <div class="terminal-line output-success">[+] 命中 CVE-202X-XXXX: Apache Tomcat 认证绕过</div>
-                                    <div class="terminal-line output-section">── Round 3 ── 漏洞利用</div>
-                                    <div class="terminal-line output-success">[+] 漏洞验证成功 uid=0(root)</div>
-                                    <div class="terminal-line output-section">── Round 4 ── 报告生成</div>
-                                    <div class="terminal-line output-success">[+] 报告已保存: ./reports/target_20260419.md</div>
+                                    <div class="terminal-line output-info">[*] 进入目标驱动求解模式，按 Ctrl+C 可随时中断</div>
+                                    <div class="terminal-line output-section">── Reason ── 分析目标，提出探索方向</div>
+                                    <div class="terminal-line output-info">  [+] Intent: 端口扫描 + 指纹识别</div>
+                                    <div class="terminal-line output-section">── Explore ── 执行探索</div>
+                                    <div class="terminal-line output-success">  [+] Fact: 开放端口 22, 80, 443, 8080</div>
+                                    <div class="terminal-line output-success">  [+] Fact: Web 指纹 Apache/2.4.62</div>
+                                    <div class="terminal-line output-section">── Reason ── 基于事实提出新方向</div>
+                                    <div class="terminal-line output-info">  [+] Intent: 测试 Tomcat Manager 弱口令</div>
+                                    <div class="terminal-line output-section">── Explore ── 执行探索</div>
+                                    <div class="terminal-line output-success">  [+] Fact: /manager/html 存在弱口令 deploy/deploy</div>
+                                    <div class="terminal-line output-success">  [+] Fact: 命中 CVE-202X-XXXX 认证绕过</div>
+                                    <div class="terminal-line output-section">── Reason ── 目标达成，生成报告</div>
+                                    <div class="terminal-line output-success">[+] 报告已保存: ./reports/target_20260713.md</div>
                                     <div class="terminal-line output-success">[+] PoC 脚本已保存: ./pocs/CVE-202X-XXXX.py</div>
+                                    <div class="terminal-line output-success">🦞 [验证通过] flag{evidence_based_pentest}</div>
                                     <div class="terminal-line output-muted cursor-line">
                                         <span class="prompt">🦞</span>
                                         <span class="cursor"></span>
@@ -300,76 +360,112 @@
                 </div>
             </div>
             <div class="row g-4">
-                <div class="col-lg-3 col-md-6">
+                <div class="col-lg-4 col-md-6">
                     <div class="feature-card holographic-card" data-aos="fade-up" data-aos-delay="0">
                         <div class="particle-border"></div>
                         <div class="holographic-shine"></div>
                         <div class="feature-number">01</div>
                         <div class="feature-icon">
-                            <i class="fas fa-comments"></i>
+                            <i class="fas fa-crosshairs"></i>
                         </div>
-                        <h3>自然语言驱动</h3>
-                        <p>用日常语言描述渗透意图，AI 自动识别阶段、选择工具、编排测试流程。</p>
+                        <h3>目标驱动求解引擎</h3>
+                        <p>摒弃固定轮数，以 Fact/Intent 黑板图驱动 OODA 循环，目标达成即收敛。</p>
                         <ul class="feature-list">
-                            <li>自动阶段识别与切换</li>
-                            <li>上下文记忆与推理</li>
-                            <li>多轮自主渗透循环</li>
+                            <li>Fact/Intent 黑板图搜索</li>
+                            <li>证据级反幻觉闸门</li>
+                            <li>结构上杜绝原地打转</li>
                         </ul>
                         <div class="card-border-glow"></div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6">
+                <div class="col-lg-4 col-md-6">
                     <div class="feature-card holographic-card" data-aos="fade-up" data-aos-delay="100">
                         <div class="particle-border"></div>
                         <div class="holographic-shine"></div>
                         <div class="feature-number">02</div>
                         <div class="feature-icon">
-                            <i class="fas fa-puzzle-piece"></i>
+                            <i class="fas fa-shield-virus"></i>
                         </div>
-                        <h3>MCP 工具链</h3>
-                        <p>4 个 MCP 服务：fetch / memory 本地开箱即用，Chrome DevTools / Burp 对接外部 MCP。</p>
+                        <h3>证据级反幻觉</h3>
+                        <p>所有结论必须在真实工具输出中逐字符出现，拒绝 AI 凭空编造。</p>
                         <ul class="feature-list">
-                            <li>fetch / memory 本地实现</li>
-                            <li>Chrome DevTools 浏览器自动化</li>
-                            <li>Burp HTTP 抓包重放</li>
+                            <li>flag 逐字符验证</li>
+                            <li>完成判定否定闸门</li>
+                            <li>即时收敛不空跑</li>
                         </ul>
                         <div class="card-border-glow"></div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6">
+                <div class="col-lg-4 col-md-6">
                     <div class="feature-card holographic-card" data-aos="fade-up" data-aos-delay="200">
                         <div class="particle-border"></div>
                         <div class="holographic-shine"></div>
                         <div class="feature-number">03</div>
                         <div class="feature-icon">
-                            <i class="fas fa-crosshairs"></i>
+                            <i class="fas fa-puzzle-piece"></i>
                         </div>
-                        <h3>21 个渗透 Skill</h3>
-                        <p>7 个核心 Skill 覆盖全流程，14 个专项 Skill 深入各场景。</p>
+                        <h3>MCP 工具链 + 信息收集</h3>
+                        <p>4 个 MCP 服务 + 6 个原生信息收集工具，覆盖全场景。</p>
                         <ul class="feature-list">
-                            <li>pentest-flow 全流程编排</li>
-                            <li>ctf-web / ctf-crypto / ctf-misc</li>
-                            <li>osint-recon 四维信息收集</li>
-                            <li>waf-bypass / crypto-toolkit</li>
+                            <li>fetch/memory 本地开箱即用</li>
+                            <li>Chrome DevTools/Burp 外部对接</li>
+                            <li>JS信息收集/未授权探测/目录枚举/空间测绘/子域名</li>
                         </ul>
                         <div class="card-border-glow"></div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6">
+                <div class="col-lg-4 col-md-6">
                     <div class="feature-card holographic-card" data-aos="fade-up" data-aos-delay="300">
                         <div class="particle-border"></div>
                         <div class="holographic-shine"></div>
                         <div class="feature-number">04</div>
                         <div class="feature-icon">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <h3>23 个渗透 Skill</h3>
+                        <p>7 核心 + 16 专项 Skill，含 180+ 参考文档。</p>
+                        <ul class="feature-list">
+                            <li>pentest-flow 全流程编排</li>
+                            <li>ctf-web/crypto/misc + hackerone</li>
+                            <li>osint-recon 四维信息收集</li>
+                            <li>cve-triage 漏洞分诊</li>
+                        </ul>
+                        <div class="card-border-glow"></div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card holographic-card" data-aos="fade-up" data-aos-delay="400">
+                        <div class="particle-border"></div>
+                        <div class="holographic-shine"></div>
+                        <div class="feature-number">05</div>
+                        <div class="feature-icon">
                             <i class="fas fa-brain"></i>
                         </div>
-                        <h3>高级 Agent 能力</h3>
-                        <p>持续性渗透测试 + 推理可视化 + Python 代码执行。</p>
+                        <h3>结构化推理 + 自适应反思</h3>
+                        <p>已知事实/约束/攻击链结构化沉淀，失败按 L0-L4 渐进升级绕过策略。</p>
                         <ul class="feature-list">
-                            <li>持续性渗透（100轮/周期）</li>
-                            <li>推理过程 think on/off 控制</li>
-                            <li>python_execute 精确 payload</li>
-                            <li>内置 CVE/知识库安全检索</li>
+                            <li>推理状态层 + 反思引擎</li>
+                            <li>L0-L4 payload 升级</li>
+                            <li>跨周期失败记忆</li>
+                        </ul>
+                        <div class="card-border-glow"></div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card holographic-card" data-aos="fade-up" data-aos-delay="500">
+                        <div class="particle-border"></div>
+                        <div class="holographic-shine"></div>
+                        <div class="feature-number">06</div>
+                        <div class="feature-icon">
+                            <i class="fas fa-desktop"></i>
+                        </div>
+                        <h3>多模式运行</h3>
+                        <p>CLI/REPL + TUI 工作台 + Web UI + Docker，全场景覆盖。</p>
+                        <ul class="feature-list">
+                            <li>vulnclaw tui 终端图形化</li>
+                            <li>vulnclaw web 浏览器操作</li>
+                            <li>Docker 一键部署</li>
+                            <li>持续性渗透 100轮/周期</li>
                         </ul>
                         <div class="card-border-glow"></div>
                     </div>
@@ -479,7 +575,7 @@
                         <div class="terminal-body">
                             <div class="terminal-cmd"><span class="code-prompt">$</span> <span class="text-accent">pip install vulnclaw</span></div>
                             <div class="terminal-cmd"><span class="code-prompt">$</span> <span class="text-accent">vulnclaw config set llm.base_url</span> https://api.minimaxi.com/v1</div>
-                            <div class="terminal-cmd"><span class="code-prompt">$</span> <span class="text-accent">vulnclaw config set llm.model</span> MiniMax-M2.7</div>
+                            <div class="terminal-cmd"><span class="code-prompt">$</span> <span class="text-accent">vulnclaw config set llm.model</span> MiniMax-M3</div>
                             <div class="terminal-cmd"><span class="code-prompt">$</span> <span class="text-accent">vulnclaw config set llm.api_key</span> sk-your-key-here</div>
                             <div class="terminal-cmd"><span class="code-prompt">$</span> <span class="text-accent">vulnclaw doctor</span> <span class="output-comment"># 检查环境</span></div>
                             <div class="terminal-output">
@@ -488,7 +584,7 @@
   Python: 3.14.4   Node.js: v24.14.1   npx: 已安装   nmap: 已安装
 
 LLM 配置:
-  Provider: minimax   API Key: 已设置   Model: MiniMax-M2.7
+  Provider: minimax   API Key: 已设置   Model: MiniMax-M3
 
 MCP 服务:
   fetch: 已启用 [P0]   memory: 已启用 [P0]
@@ -496,6 +592,21 @@ MCP 服务:
 
 ✅ 环境就绪，运行 vulnclaw 开始
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-lg-10 mx-auto">
+                    <div class="docker-info-box" data-aos="fade-up">
+                        <div class="docker-header">
+                            <i class="fab fa-docker"></i>
+                            <span>也可以用 Docker 一键启动</span>
+                        </div>
+                        <div class="docker-code">
+                            <span class="code-prompt">$</span> cp .env.example .env <span class="output-comment"># 填入 API Key</span><br>
+                            <span class="code-prompt">$</span> docker compose up --build <span class="output-comment"># 打开 http://127.0.0.1:7788</span>
                         </div>
                     </div>
                 </div>
@@ -553,37 +664,37 @@ MCP 服务:
                     <div class="col-lg-2 col-md-4 col-6">
                         <div class="flow-step" data-aos="fade-up" data-aos-delay="0">
                             <div class="flow-icon-wrapper">
-                                <div class="flow-icon"><i class="fas fa-search"></i></div>
+                                <div class="flow-icon"><i class="fas fa-brain"></i></div>
                             </div>
-                            <h5>信息收集</h5>
-                            <p>端口扫描、指纹识别<br>目录枚举、指纹分析</p>
+                            <h5>Reason(分析)</h5>
+                            <p>分析全图，提出探索方向<br>Intent 驱动</p>
                         </div>
                     </div>
                     <div class="col-lg-2 col-md-4 col-6">
                         <div class="flow-step" data-aos="fade-up" data-aos-delay="100">
                             <div class="flow-icon-wrapper">
-                                <div class="flow-icon"><i class="fas fa-bug"></i></div>
+                                <div class="flow-icon"><i class="fas fa-rocket"></i></div>
                             </div>
-                            <h5>漏洞发现</h5>
-                            <p>CVE 匹配、Web 漏洞<br>配置缺陷、逻辑漏洞</p>
+                            <h5>Explore(探索)</h5>
+                            <p>领取 Intent，工具执行<br>调用 Skill/MCP</p>
                         </div>
                     </div>
                     <div class="col-lg-2 col-md-4 col-6">
                         <div class="flow-step" data-aos="fade-up" data-aos-delay="200">
                             <div class="flow-icon-wrapper">
-                                <div class="flow-icon"><i class="fas fa-fire"></i></div>
+                                <div class="flow-icon"><i class="fas fa-check-circle"></i></div>
                             </div>
-                            <h5>漏洞利用</h5>
-                            <p>PoC 构造、WAF 绕过<br>命令执行、权限获取</p>
+                            <h5>Fact(事实)</h5>
+                            <p>证据验证，写回事实<br>黑板图更新</p>
                         </div>
                     </div>
                     <div class="col-lg-2 col-md-4 col-6">
                         <div class="flow-step" data-aos="fade-up" data-aos-delay="300">
                             <div class="flow-icon-wrapper">
-                                <div class="flow-icon"><i class="fas fa-user-secret"></i></div>
+                                <div class="flow-icon"><i class="fas fa-sync-alt"></i></div>
                             </div>
-                            <h5>后渗透</h5>
-                            <p>内网探测、横向移动<br>凭据窃取、权限维持</p>
+                            <h5>Reflect(反思)</h5>
+                            <p>失败归类，L0-L4 升级<br>跨周期记忆</p>
                         </div>
                     </div>
                     <div class="col-lg-2 col-md-4 col-6">
@@ -591,8 +702,8 @@ MCP 服务:
                             <div class="flow-icon-wrapper">
                                 <div class="flow-icon"><i class="fas fa-file-code"></i></div>
                             </div>
-                            <h5>报告生成</h5>
-                            <p>Markdown 结构化报告<br>修复建议、风险评级</p>
+                            <h5>Report(报告)</h5>
+                            <p>结构化报告生成<br>修复建议、风险评级</p>
                         </div>
                     </div>
                     <div class="col-lg-2 col-md-4 col-6">
@@ -600,8 +711,8 @@ MCP 服务:
                             <div class="flow-icon-wrapper">
                                 <div class="flow-icon"><i class="fab fa-python"></i></div>
                             </div>
-                            <h5>PoC 输出</h5>
-                            <p>Python PoC 脚本<br>可复现漏洞验证</p>
+                            <h5>PoC(验证)</h5>
+                            <p>Python 验证脚本<br>可复现漏洞验证</p>
                         </div>
                     </div>
                 </div>
@@ -610,7 +721,7 @@ MCP 服务:
                         <div class="loop-icon">
                             <i class="fas fa-sync-alt"></i>
                         </div>
-                        <span>LLM Agent 自主循环 · 自动阶段切换 · Ctrl+C 中断</span>
+                        <span>目标驱动 OODA 循环 · Fact/Intent 黑板图 · 证据级反幻觉</span>
                     </div>
                 </div>
             </div>
@@ -641,7 +752,7 @@ MCP 服务:
 
             <div class="row key-numbers">
                 <div class="col-lg-2 col-md-4 col-6">
-                    <div class="key-num-item neon-number" data-count="13" data-aos="zoom-in" data-aos-delay="0">
+                    <div class="key-num-item neon-number" data-count="14" data-aos="zoom-in" data-aos-delay="0">
                         <div class="key-num-wrapper">
                             <span class="key-num">0</span>
                             <span class="key-suffix">+</span>
@@ -661,7 +772,7 @@ MCP 服务:
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-4 col-6">
-                    <div class="key-num-item neon-number" data-count="21" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="key-num-item neon-number" data-count="23" data-aos="zoom-in" data-aos-delay="200">
                         <div class="key-num-wrapper">
                             <span class="key-num">0</span>
                             <span class="key-suffix">+</span>
@@ -710,6 +821,7 @@ MCP 服务:
                 </h4>
                 <div class="providers">
                     <div class="provider-chip"><i class="fas fa-robot"></i> OpenAI</div>
+                    <div class="provider-chip"><i class="fas fa-cat"></i> Anthropic</div>
                     <div class="provider-chip"><i class="fas fa-bolt"></i> MiniMax</div>
                     <div class="provider-chip"><i class="fas fa-water"></i> DeepSeek</div>
                     <div class="provider-chip"><i class="fas fa-star"></i> 智谱 GLM</div>
