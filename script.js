@@ -2,9 +2,13 @@
 // WebGL 3D Particle Tunnel + Cyberpunk Effects + Advanced Interactions
 
 document.addEventListener('DOMContentLoaded', function() {
+    const hasLightCanvas = !!document.getElementById('lightCanvas');
+
     initCustomCursor();
     initScrollProgress();
-    initWebGL();
+    if (!hasLightCanvas) {
+        initWebGL();
+    }
     initSmoothScrolling();
     initScrollAnimations();
     initHeaderScroll();
@@ -15,8 +19,10 @@ document.addEventListener('DOMContentLoaded', function() {
     initGlitchEffect();
     initParallaxEffect();
     initTerminalScroll();
-    initMouseTrail();
-    initFloatingParticles();
+    if (!hasLightCanvas) {
+        initMouseTrail();
+        initFloatingParticles();
+    }
     initFeatureCardTilt();
     initStats();
 });

@@ -53,6 +53,26 @@ function clamp(value, min, max) {
 function lerp(a, b, t) {
   return a + (b - a) * t;
 }
+function throttle(fn, limitMs) {
+  let last = 0;
+  let pending = null;
+  return function (...args) {
+    const now = performance.now();
+    if (now - last >= limitMs) {
+      last = now;
+      fn.apply(this, args);
+      return;
+    }
+    if (!pending) {
+      pending = setTimeout(() => {
+        pending = null;
+        last = performance.now();
+        fn.apply(this, args);
+      }, limitMs - (now - last));
+    }
+  };
+}
+
 
 function hexToUpper(hex) {
   return hex.toUpperCase();
@@ -331,6 +351,7 @@ function hexToUpper(hex) {
   let frame = 0;
   let animationFrame = 0;
   let resizeFrame = 0;
+  let heroVisible = true;
   let lastTime = performance.now();
   let accumulator = 0;
   let stableFrames = 0;
@@ -343,11 +364,23 @@ function hexToUpper(hex) {
   let beamStartY = 0;
   let beamStartAngle = INITIAL_LIGHT.angle;
   let beamDragged = false;
+  let lastPaintTime = 0;
+  const IDLE_PAINT_INTERVAL = 200;
+
+  function requestPaintThrottled(force = false) {
+    if (!canvas.requestPaint) return;
+    const now = performance.now();
+    const isIdle = !pulling && stableFrames >= 80 && ready;
+    if (force || !isIdle || now - lastPaintTime >= IDLE_PAINT_INTERVAL) {
+      lastPaintTime = now;
+      canvas.requestPaint();
+    }
+  }
 
   function resize() {
     const width = Math.max(1, canvas.clientWidth);
     const height = Math.max(1, canvas.clientHeight);
-    const dpr = Math.min(window.devicePixelRatio || 1, width < 760 ? 1.25 : 1.5);
+    const dpr = Math.min(window.devicePixelRatio || 1, width < 760 ? 1.0 : 1.25);
     renderer.setPixelRatio(dpr);
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
@@ -386,7 +419,7 @@ function hexToUpper(hex) {
     camera.lookAt(0, pageGroup.position.y + upwardTarget, 0);
     camera.updateMatrixWorld();
     interactions.update();
-    canvas.requestPaint?.();
+    requestPaintThrottled();
     wake();
   }
 
@@ -443,6 +476,7 @@ function hexToUpper(hex) {
   function animate(time) {
     animationFrame = 0;
     if (disposed) return;
+    if (!heroVisible) return;
 
     const delta = Math.min((time - lastTime) / 1000, 0.05);
     lastTime = time;
@@ -464,7 +498,7 @@ function hexToUpper(hex) {
 
   function wake() {
     stableFrames = 0;
-    if (!animationFrame && !disposed) {
+    if (!animationFrame && !disposed && heroVisible) {
       lastTime = performance.now();
       animationFrame = requestAnimationFrame(animate);
     }
@@ -596,6 +630,22 @@ function hexToUpper(hex) {
     cancelAnimationFrame(resizeFrame);
     resizeFrame = requestAnimationFrame(resize);
   }
+  const heroEl = document.getElementById('hero');
+  if (heroEl && 'IntersectionObserver' in window) {
+    const heroObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        heroVisible = entry.isIntersecting;
+        if (heroVisible) {
+          wake();
+        } else if (animationFrame) {
+          cancelAnimationFrame(animationFrame);
+          animationFrame = 0;
+        }
+      });
+    }, { threshold: 0 });
+    heroObserver.observe(heroEl);
+  }
+
 
   function onPaint() {
     wake();
@@ -608,10 +658,10 @@ function hexToUpper(hex) {
   canvas.addEventListener('pointerdown', onPointerDown);
   canvas.addEventListener('dblclick', resetMotion);
   canvas.addEventListener('contextmenu', onContextMenu);
-  window.addEventListener('pointermove', onPointerMove, { passive: true });
+  window.addEventListener('pointermove', throttle(onPointerMove, 16), { passive: true });
   window.addEventListener('pointerup', onPointerUp);
   window.addEventListener('pointercancel', onPointerUp);
-  window.addEventListener('resize', onResize, { passive: true });
+  window.addEventListener('resize', throttle(onResize, 120), { passive: true });
   canvas.addEventListener('paint', onPaint);
 
   function updateLightRig() {
@@ -636,7 +686,7 @@ function hexToUpper(hex) {
     undersideMaterial.emissiveIntensity = lighting.enabled ? 0.22 + lighting.brightness / 7250 : 0.03;
 
     pageSource.style.setProperty('--lamp-color', lighting.color);
-    canvas.requestPaint?.();
+    requestPaintThrottled();
     wake();
   }
 
@@ -682,7 +732,7 @@ function hexToUpper(hex) {
       btn.classList.toggle('is-active', active);
       btn.setAttribute('aria-pressed', String(active));
     });
-    canvas.requestPaint?.();
+    requestPaintThrottled();
   }
 
   conceptButtons.forEach((btn) => {
@@ -747,7 +797,7 @@ function hexToUpper(hex) {
 
   void document.fonts.ready.then(() => {
     if (disposed) return;
-    canvas.requestPaint?.();
+    requestPaintThrottled();
     resize();
     updateRig();
     updateLightDOM();
