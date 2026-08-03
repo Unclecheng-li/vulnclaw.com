@@ -430,7 +430,8 @@ body:hover .cursor-outline {
   overflow: hidden;
   isolation: isolate;
   background:
-    radial-gradient(circle at 50% 8%, rgba(70, 45, 40, 0.16), transparent 32%),
+    radial-gradient(circle at 50% 8%, rgba(70, 45, 40, 0.18), transparent 34%),
+    radial-gradient(circle at 50% 112%, rgba(255, 42, 42, 0.08), transparent 46%),
     var(--bg);
 }
 
@@ -482,7 +483,7 @@ body:hover .cursor-outline {
 
 .light-experience-shell .scene-preview .page-source {
   flex: none;
-  transform: scale(0.86);
+  transform: scale(0.94);
   transform-origin: center;
   box-shadow: 0 32px 90px rgba(0, 0, 0, 0.58);
 }
@@ -493,12 +494,12 @@ body:hover .cursor-outline {
 }
 
 .page-source {
-  --lamp-color: #ff6b35;
+  --lamp-color: #ffd2a3;
   position: relative;
   width: 1440px;
   height: 810px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.17);
   border-radius: 28px;
   color: #f6f7fb;
   background:
@@ -700,7 +701,7 @@ body:hover .cursor-outline {
   align-self: center;
   width: 100%;
   padding: 25px;
-  border: 1px solid rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.17);
   border-radius: 19px;
   background: rgba(21, 13, 13, 0.93);
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
@@ -3387,4 +3388,28 @@ body:hover .cursor-outline {
     .provider-line {
         max-width: 60px;
     }
+}
+
+
+/* ============================================
+   POLISH - rendering, focus & anchor refinements
+   ============================================ */
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+    scrollbar-width: thin;
+    scrollbar-color: #7a2323 var(--terminal-black);
+}
+
+:focus-visible {
+    outline: 2px solid rgba(255, 107, 53, 0.85);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+section[id] {
+    scroll-margin-top: calc(var(--topbar-h) + var(--header-h) + 16px);
 }

@@ -15,13 +15,13 @@ const CONCEPTS = {
   Reflect: '失败按 L0-L4 升级策略反思，跨周期记忆避免原地打转。'
 };
 
-const COLOR_PRESETS = ['#ff6b35', '#ff9a5c', '#ff2a2a', '#ffad7a', '#ff4d4d'];
+const COLOR_PRESETS = ['#ffd2a3', '#ff9a5c', '#ff2a2a', '#ffad7a', '#ff4d4d'];
 
 const INITIAL_LIGHT = {
   enabled: true,
-  angle: 34,
+  angle: 38,
   brightness: 1450,
-  color: '#ff6b35'
+  color: '#ffd2a3'
 };
 
 const DOWN = new THREE.Vector3(0, -1, 0);
@@ -455,7 +455,7 @@ function hexToUpper(hex) {
     const sourceWidth = pageSource.offsetWidth || 1440;
     const sourceHeight = pageSource.offsetHeight || 810;
     const portrait = height > width * 1.16;
-    const pageWidth = portrait ? 7.2 : 12.8;
+    const pageWidth = portrait ? 8.3 : 14.6;
     const pageHeight = pageWidth * (sourceHeight / sourceWidth);
     pageMesh.scale.set(pageWidth, pageHeight, 1);
     backing.scale.set(pageWidth, pageHeight, 1);
@@ -473,8 +473,8 @@ function hexToUpper(hex) {
       previous.copy(position);
     }
 
-    const fitHeight = pageHeight + 3.1;
-    const fitWidth = pageWidth + 1.25;
+    const fitHeight = pageHeight + 2.35;
+    const fitWidth = pageWidth + 0.7;
     const halfFov = THREE.MathUtils.degToRad(camera.fov * 0.5);
     const distanceForHeight = fitHeight / (2 * Math.tan(halfFov));
     const distanceForWidth = fitWidth / (2 * Math.tan(halfFov) * camera.aspect);
