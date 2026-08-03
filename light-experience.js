@@ -123,7 +123,7 @@ function hexToUpper(hex) {
 
   let renderer;
   try {
-    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: 'high-performance' });
   } catch (err) {
     console.error(err);
     if (errorEl) errorEl.textContent = 'This experience needs WebGL to render the VulnClaw light study.';
@@ -225,11 +225,11 @@ function hexToUpper(hex) {
     metalness: 0.74,
     side: THREE.DoubleSide
   });
-  const shade = new THREE.Mesh(new THREE.LatheGeometry(shadeProfile, 48), shadeMaterial);
+  const shade = new THREE.Mesh(new THREE.LatheGeometry(shadeProfile, 32), shadeMaterial);
   shadeGroup.add(shade);
 
   const rim = new THREE.Mesh(
-    new THREE.TorusGeometry(1.095, 0.027, 8, 48),
+    new THREE.TorusGeometry(1.095, 0.027, 8, 32),
     new THREE.MeshStandardMaterial({ color: 0x17191f, roughness: 0.28, metalness: 0.82 })
   );
   rim.rotation.x = Math.PI / 2;
@@ -243,13 +243,13 @@ function hexToUpper(hex) {
     roughness: 0.92,
     side: THREE.DoubleSide
   });
-  const underside = new THREE.Mesh(new THREE.CircleGeometry(1.055, 48), undersideMaterial);
+  const underside = new THREE.Mesh(new THREE.CircleGeometry(1.055, 32), undersideMaterial);
   underside.rotation.x = Math.PI / 2;
   underside.position.y = -0.385;
   shadeGroup.add(underside);
 
   const connector = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.095, 0.12, 0.2, 20),
+    new THREE.CylinderGeometry(0.095, 0.12, 0.2, 16),
     new THREE.MeshStandardMaterial({ color: 0x9c6744, roughness: 0.44, metalness: 0.66 })
   );
   connector.position.y = 0.08;
@@ -261,7 +261,7 @@ function hexToUpper(hex) {
     emissiveIntensity: 3.2,
     roughness: 0.2
   });
-  const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.16, 20, 12), bulbMaterial);
+  const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.16, 16, 8), bulbMaterial);
   bulb.scale.y = 1.2;
   bulb.position.y = -0.33;
   shadeGroup.add(bulb);
@@ -366,6 +366,8 @@ function hexToUpper(hex) {
   let beamDragged = false;
   let lastPaintTime = 0;
   const IDLE_PAINT_INTERVAL = 200;
+  let lastRenderTime = 0;
+  const MIN_FRAME_INTERVAL = 1000 / 30;
 
   function requestPaintThrottled(force = false) {
     if (!canvas.requestPaint) return;
@@ -380,7 +382,7 @@ function hexToUpper(hex) {
   function resize() {
     const width = Math.max(1, canvas.clientWidth);
     const height = Math.max(1, canvas.clientHeight);
-    const dpr = Math.min(window.devicePixelRatio || 1, width < 760 ? 1.0 : 1.25);
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.0);
     renderer.setPixelRatio(dpr);
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
@@ -478,6 +480,14 @@ function hexToUpper(hex) {
     if (disposed) return;
     if (!heroVisible) return;
 
+    // Throttle to 30fps when stable, allow 60fps during interaction
+    const throttle = !pulling && stableFrames >= 40;
+    if (throttle && time - lastRenderTime < MIN_FRAME_INTERVAL) {
+      animationFrame = requestAnimationFrame(animate);
+      return;
+    }
+    lastRenderTime = time;
+
     const delta = Math.min((time - lastTime) / 1000, 0.05);
     lastTime = time;
     accumulator = Math.min(accumulator + delta, fixedStep * 5);
@@ -487,7 +497,7 @@ function hexToUpper(hex) {
     }
 
     updateRig();
-    interactions.update();
+    if (frame % 2 === 0) interactions.update();
     renderer.render(scene, camera);
     frame += 1;
 
