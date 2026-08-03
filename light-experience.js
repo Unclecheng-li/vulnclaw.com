@@ -6,7 +6,7 @@
 
 import * as THREE from 'three';
 import { InteractionManager } from 'three/addons/interaction/InteractionManager.js';
-import { installHtmlInCanvasPolyfill } from 'three-html-render';
+import { installHtmlInCanvasPolyfill, getHtmlRenderer } from 'three-html-render';
 
 const CONCEPTS = {
   Reason: '分析全图，提出探索方向，以 Intent 驱动下一轮渗透。',
@@ -70,6 +70,98 @@ function hexToUpper(hex) {
 
   installHtmlInCanvasPolyfill();
   installThreeHtmlTextureCompatibility();
+
+  // --- Performance hardening for the HTML-in-Canvas polyfill ---
+  // Full-surface rasterization is the interaction bottleneck: by default the
+  // polyfill embeds EVERY document stylesheet (including cross-origin sheets
+  // it re-fetches, with megabytes of font data URIs) into each SVG snapshot.
+  // Measured cost here: >10s for the first repaint, 1.2-1.8s per repaint
+  // afterwards, which freezes the page during any pointer interaction.
+  // Fix: feed the rasterizer a curated stylesheet containing only the rules
+  // that match the page source (system fonts instead of embedded webfonts),
+  // and rate-limit repaints.
+  const htmlRenderer = getHtmlRenderer();
+  htmlRenderer.pixelRatio = 1;
+
+  function buildTextureStyles() {
+    const out = [];
+    const seen = new Set();
+    const PSEUDO = /::?(?:hover|active|focus(?:-visible|-within)?|before|after|first-child|last-child|first-of-type|last-of-type|nth-child\([^)]*\)|nth-of-type\([^)]*\)|checked|disabled|placeholder|selection|marker)\b/g;
+    const matchesPage = (selectorText) =>
+      selectorText.split(',').some((raw) => {
+        const sel = raw.trim();
+        if (!sel) return false;
+        if (sel === ':root' || /^(?:html|body)\b/.test(sel)) return true;
+        const test = sel.replace(PSEUDO, '*');
+        try {
+          return pageSource.matches(test) || !!pageSource.querySelector(test);
+        } catch {
+          return true; // keep rules we cannot test
+        }
+      });
+    const push = (cssText) => {
+      if (!seen.has(cssText)) {
+        seen.add(cssText);
+        out.push(cssText);
+      }
+    };
+    for (const sheet of Array.from(document.styleSheets)) {
+      let rules;
+      try {
+        rules = sheet.cssRules;
+      } catch {
+        continue; // skip cross-origin sheets (bootstrap / font-awesome / webfonts)
+      }
+      for (const rule of Array.from(rules || [])) {
+        if (rule instanceof CSSStyleRule) {
+          if (matchesPage(rule.selectorText)) push(rule.cssText);
+        } else if (rule instanceof CSSKeyframesRule) {
+          push(rule.cssText);
+        } else if (rule instanceof CSSMediaRule) {
+          const inner = [];
+          for (const sub of Array.from(rule.cssRules)) {
+            if (sub instanceof CSSStyleRule && matchesPage(sub.selectorText)) inner.push(sub.cssText);
+            else if (sub instanceof CSSKeyframesRule) inner.push(sub.cssText);
+          }
+          if (inner.length) push(`@media ${rule.conditionText} { ${inner.join('\n')} }`);
+        }
+      }
+    }
+    return [
+      '*,*::before,*::after{box-sizing:border-box}',
+      'html,body{margin:0;padding:0;background:transparent}',
+      'p,h1,h2,h3,figure{margin:0}',
+      'button{font:inherit;background:none;border:0;padding:0;cursor:pointer}',
+      'img{display:block;max-width:100%}',
+      'input{font:inherit}',
+      ...out
+    ].join('\n');
+  }
+
+  const textureStylesPromise = Promise.resolve().then(buildTextureStyles);
+  htmlRenderer.getPageStylesCss = () => textureStylesPromise;
+
+  const rasterizeElement = htmlRenderer.update.bind(htmlRenderer);
+  const RASTER_MIN_INTERVAL = 120;
+  let lastRasterAt = -Infinity;
+  let trailingRepaintTimer = 0;
+  htmlRenderer.update = async (element) => {
+    const now = performance.now();
+    const wait = RASTER_MIN_INTERVAL - (now - lastRasterAt);
+    if (wait > 0) {
+      // Skip this repaint, but guarantee the texture converges to the latest
+      // state shortly after the burst ends.
+      if (!trailingRepaintTimer) {
+        trailingRepaintTimer = window.setTimeout(() => {
+          trailingRepaintTimer = 0;
+          canvas.requestPaint?.();
+        }, wait + 16);
+      }
+      return htmlRenderer.getCanvas(element);
+    }
+    lastRasterAt = now;
+    return rasterizeElement(element);
+  };
 
   // Create a visible preview clone of the page source. The HTML-in-Canvas
   // polyfill rasterizes via SVG foreignObject, which only renders reliably
@@ -604,7 +696,24 @@ function hexToUpper(hex) {
     resizeFrame = requestAnimationFrame(resize);
   }
 
+  function applyHitRegion() {
+    // The polyfill moves pageSource into an invisible interactive overlay that
+    // covers the canvas. Real pointer events on it toggle pseudo-* classes,
+    // which schedule expensive full-surface repaints on every hover boundary.
+    // Restrict real hit-testing to the actual controls; empty areas fall
+    // through to the overlay host, which forwards to the canvas listeners
+    // without scheduling repaints.
+    if (pageSource.style.pointerEvents !== 'none') pageSource.style.setProperty('pointer-events', 'none');
+    pageSource.querySelectorAll('[data-interactive]').forEach((el) => {
+      if (el.style.pointerEvents !== 'none') el.style.setProperty('pointer-events', 'none');
+    });
+    pageSource.querySelectorAll('[data-interactive] button, [data-interactive] input, [data-interactive] label').forEach((el) => {
+      if (el.style.pointerEvents !== 'auto') el.style.setProperty('pointer-events', 'auto');
+    });
+  }
+
   function onPaint() {
+    applyHitRegion();
     wake();
   }
 
