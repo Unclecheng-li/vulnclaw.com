@@ -53,26 +53,6 @@ function clamp(value, min, max) {
 function lerp(a, b, t) {
   return a + (b - a) * t;
 }
-function throttle(fn, limitMs) {
-  let last = 0;
-  let pending = null;
-  return function (...args) {
-    const now = performance.now();
-    if (now - last >= limitMs) {
-      last = now;
-      fn.apply(this, args);
-      return;
-    }
-    if (!pending) {
-      pending = setTimeout(() => {
-        pending = null;
-        last = performance.now();
-        fn.apply(this, args);
-      }, limitMs - (now - last));
-    }
-  };
-}
-
 
 function hexToUpper(hex) {
   return hex.toUpperCase();
@@ -91,6 +71,10 @@ function hexToUpper(hex) {
   installHtmlInCanvasPolyfill();
   installThreeHtmlTextureCompatibility();
 
+  // Create a visible preview clone of the page source. The HTML-in-Canvas
+  // polyfill rasterizes via SVG foreignObject, which only renders reliably
+  // when the source element is present in the visible DOM. The interactive
+  // original stays in place for three.js to move into the canvas.
   const previewShell = document.createElement('div');
   previewShell.className = 'scene-preview';
   previewShell.setAttribute('aria-hidden', 'true');
@@ -121,9 +105,10 @@ function hexToUpper(hex) {
 
   const activeColor = new THREE.Color();
 
+  // Renderer
   let renderer;
   try {
-    renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: 'high-performance' });
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
   } catch (err) {
     console.error(err);
     if (errorEl) errorEl.textContent = 'This experience needs WebGL to render the VulnClaw light study.';
@@ -131,6 +116,7 @@ function hexToUpper(hex) {
     return;
   }
 
+  // Diagnostic logging for HTML-in-Canvas support
   const gl = renderer.getContext();
   const diag = [
     `HTMLTexture: ${typeof THREE.HTMLTexture}`,
@@ -225,11 +211,11 @@ function hexToUpper(hex) {
     metalness: 0.74,
     side: THREE.DoubleSide
   });
-  const shade = new THREE.Mesh(new THREE.LatheGeometry(shadeProfile, 32), shadeMaterial);
+  const shade = new THREE.Mesh(new THREE.LatheGeometry(shadeProfile, 48), shadeMaterial);
   shadeGroup.add(shade);
 
   const rim = new THREE.Mesh(
-    new THREE.TorusGeometry(1.095, 0.027, 8, 32),
+    new THREE.TorusGeometry(1.095, 0.027, 8, 48),
     new THREE.MeshStandardMaterial({ color: 0x17191f, roughness: 0.28, metalness: 0.82 })
   );
   rim.rotation.x = Math.PI / 2;
@@ -243,13 +229,13 @@ function hexToUpper(hex) {
     roughness: 0.92,
     side: THREE.DoubleSide
   });
-  const underside = new THREE.Mesh(new THREE.CircleGeometry(1.055, 32), undersideMaterial);
+  const underside = new THREE.Mesh(new THREE.CircleGeometry(1.055, 48), undersideMaterial);
   underside.rotation.x = Math.PI / 2;
   underside.position.y = -0.385;
   shadeGroup.add(underside);
 
   const connector = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.095, 0.12, 0.2, 16),
+    new THREE.CylinderGeometry(0.095, 0.12, 0.2, 20),
     new THREE.MeshStandardMaterial({ color: 0x9c6744, roughness: 0.44, metalness: 0.66 })
   );
   connector.position.y = 0.08;
@@ -261,7 +247,7 @@ function hexToUpper(hex) {
     emissiveIntensity: 3.2,
     roughness: 0.2
   });
-  const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.16, 16, 8), bulbMaterial);
+  const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.16, 20, 12), bulbMaterial);
   bulb.scale.y = 1.2;
   bulb.position.y = -0.33;
   shadeGroup.add(bulb);
@@ -321,6 +307,7 @@ function hexToUpper(hex) {
   interactions.connect(renderer, camera);
   interactions.add(pageMesh);
 
+  // Physics state
   const fixedStep = 1 / 120;
   const ropeLength = 1.22;
   const pageTopToAnchor = 1.18;
@@ -351,7 +338,6 @@ function hexToUpper(hex) {
   let frame = 0;
   let animationFrame = 0;
   let resizeFrame = 0;
-  let heroVisible = true;
   let lastTime = performance.now();
   let accumulator = 0;
   let stableFrames = 0;
@@ -364,25 +350,11 @@ function hexToUpper(hex) {
   let beamStartY = 0;
   let beamStartAngle = INITIAL_LIGHT.angle;
   let beamDragged = false;
-  let lastPaintTime = 0;
-  const IDLE_PAINT_INTERVAL = 200;
-  let lastRenderTime = 0;
-  const MIN_FRAME_INTERVAL = 1000 / 30;
-
-  function requestPaintThrottled(force = false) {
-    if (!canvas.requestPaint) return;
-    const now = performance.now();
-    const isIdle = !pulling && stableFrames >= 80 && ready;
-    if (force || !isIdle || now - lastPaintTime >= IDLE_PAINT_INTERVAL) {
-      lastPaintTime = now;
-      canvas.requestPaint();
-    }
-  }
 
   function resize() {
     const width = Math.max(1, canvas.clientWidth);
     const height = Math.max(1, canvas.clientHeight);
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.0);
+    const dpr = Math.min(window.devicePixelRatio || 1, width < 760 ? 1.25 : 1.5);
     renderer.setPixelRatio(dpr);
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
@@ -421,7 +393,7 @@ function hexToUpper(hex) {
     camera.lookAt(0, pageGroup.position.y + upwardTarget, 0);
     camera.updateMatrixWorld();
     interactions.update();
-    requestPaintThrottled();
+    canvas.requestPaint?.();
     wake();
   }
 
@@ -478,15 +450,6 @@ function hexToUpper(hex) {
   function animate(time) {
     animationFrame = 0;
     if (disposed) return;
-    if (!heroVisible) return;
-
-    // Throttle to 30fps when stable, allow 60fps during interaction
-    const throttle = !pulling && stableFrames >= 40;
-    if (throttle && time - lastRenderTime < MIN_FRAME_INTERVAL) {
-      animationFrame = requestAnimationFrame(animate);
-      return;
-    }
-    lastRenderTime = time;
 
     const delta = Math.min((time - lastTime) / 1000, 0.05);
     lastTime = time;
@@ -497,7 +460,7 @@ function hexToUpper(hex) {
     }
 
     updateRig();
-    if (frame % 2 === 0) interactions.update();
+    interactions.update();
     renderer.render(scene, camera);
     frame += 1;
 
@@ -508,7 +471,7 @@ function hexToUpper(hex) {
 
   function wake() {
     stableFrames = 0;
-    if (!animationFrame && !disposed && heroVisible) {
+    if (!animationFrame && !disposed) {
       lastTime = performance.now();
       animationFrame = requestAnimationFrame(animate);
     }
@@ -640,22 +603,6 @@ function hexToUpper(hex) {
     cancelAnimationFrame(resizeFrame);
     resizeFrame = requestAnimationFrame(resize);
   }
-  const heroEl = document.getElementById('hero');
-  if (heroEl && 'IntersectionObserver' in window) {
-    const heroObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        heroVisible = entry.isIntersecting;
-        if (heroVisible) {
-          wake();
-        } else if (animationFrame) {
-          cancelAnimationFrame(animationFrame);
-          animationFrame = 0;
-        }
-      });
-    }, { threshold: 0 });
-    heroObserver.observe(heroEl);
-  }
-
 
   function onPaint() {
     wake();
@@ -668,12 +615,13 @@ function hexToUpper(hex) {
   canvas.addEventListener('pointerdown', onPointerDown);
   canvas.addEventListener('dblclick', resetMotion);
   canvas.addEventListener('contextmenu', onContextMenu);
-  window.addEventListener('pointermove', throttle(onPointerMove, 16), { passive: true });
+  window.addEventListener('pointermove', onPointerMove, { passive: true });
   window.addEventListener('pointerup', onPointerUp);
   window.addEventListener('pointercancel', onPointerUp);
-  window.addEventListener('resize', throttle(onResize, 120), { passive: true });
+  window.addEventListener('resize', onResize, { passive: true });
   canvas.addEventListener('paint', onPaint);
 
+  // Controls
   function updateLightRig() {
     const color = activeColor.set(lighting.color);
     const effectiveBrightness = lighting.enabled ? lighting.brightness : 0;
@@ -696,7 +644,7 @@ function hexToUpper(hex) {
     undersideMaterial.emissiveIntensity = lighting.enabled ? 0.22 + lighting.brightness / 7250 : 0.03;
 
     pageSource.style.setProperty('--lamp-color', lighting.color);
-    requestPaintThrottled();
+    canvas.requestPaint?.();
     wake();
   }
 
@@ -742,7 +690,7 @@ function hexToUpper(hex) {
       btn.classList.toggle('is-active', active);
       btn.setAttribute('aria-pressed', String(active));
     });
-    requestPaintThrottled();
+    canvas.requestPaint?.();
   }
 
   conceptButtons.forEach((btn) => {
@@ -807,7 +755,7 @@ function hexToUpper(hex) {
 
   void document.fonts.ready.then(() => {
     if (disposed) return;
-    requestPaintThrottled();
+    canvas.requestPaint?.();
     resize();
     updateRig();
     updateLightDOM();
@@ -819,9 +767,11 @@ function hexToUpper(hex) {
     wake();
   });
 
+  // Initial state
   updateLightDOM();
   updateRig();
 
+  // Cleanup on page hide/navigate
   window.addEventListener('beforeunload', () => {
     disposed = true;
     cancelAnimationFrame(animationFrame);
