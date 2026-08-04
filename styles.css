@@ -3413,3 +3413,57 @@ html {
 section[id] {
     scroll-margin-top: calc(var(--topbar-h) + var(--header-h) + 16px);
 }
+
+
+/* ============================================
+   PAGE SOURCE - terminal chip & capability badges
+   ============================================ */
+.page-terminal {
+    margin-top: 26px;
+    padding: 13px 18px;
+    border: 1px solid color-mix(in srgb, var(--lamp-color) 30%, transparent);
+    border-left: 3px solid color-mix(in srgb, var(--lamp-color) 72%, transparent);
+    border-radius: 10px;
+    background: rgba(3, 2, 5, 0.66);
+    box-shadow: inset 0 0 26px rgba(0, 0, 0, 0.5);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.8;
+}
+.page-terminal .term-line {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.page-terminal .term-prompt {
+    color: #00ff88;
+    font-weight: 700;
+    margin-right: 9px;
+}
+.page-terminal .term-cmd { color: #f4f5fa; }
+.page-terminal .term-out {
+    color: rgba(232, 232, 240, 0.5);
+    font-size: 12px;
+}
+.page-terminal .term-out b {
+    color: color-mix(in srgb, var(--lamp-color) 88%, white);
+    font-weight: 600;
+}
+.page-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+}
+.page-badges span {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    padding: 5px 12px;
+    border: 1px solid color-mix(in srgb, var(--lamp-color) 26%, transparent);
+    border-radius: 999px;
+    color: color-mix(in srgb, var(--lamp-color) 80%, white);
+    background: color-mix(in srgb, var(--lamp-color) 7%, transparent);
+}
