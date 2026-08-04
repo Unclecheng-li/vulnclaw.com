@@ -15,13 +15,13 @@ const CONCEPTS = {
   Reflect: '失败按 L0-L4 升级策略反思，跨周期记忆避免原地打转。'
 };
 
-const COLOR_PRESETS = ['#ffd2a3', '#ff9a5c', '#ff2a2a', '#ffad7a', '#ff4d4d'];
+const COLOR_PRESETS = ['#e5f3ff', '#ffd2a3', '#ff9a5c', '#ff2a2a', '#ffad7a', '#ff4d4d'];
 
 const INITIAL_LIGHT = {
   enabled: true,
   angle: 38,
   brightness: 1450,
-  color: '#ffd2a3'
+  color: '#e5f3ff'
 };
 
 const DOWN = new THREE.Vector3(0, -1, 0);
@@ -334,7 +334,7 @@ function hexToUpper(hex) {
   shadeGroup.add(connector);
 
   const bulbMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffd7ad,
+    color: 0xeaf4ff,
     emissive: INITIAL_LIGHT.color,
     emissiveIntensity: 3.2,
     roughness: 0.2
@@ -352,9 +352,9 @@ function hexToUpper(hex) {
     if (ctx) {
       const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
       gradient.addColorStop(0, 'rgba(255,255,255,1)');
-      gradient.addColorStop(0.16, 'rgba(255,222,172,.8)');
-      gradient.addColorStop(0.46, 'rgba(255,170,94,.22)');
-      gradient.addColorStop(1, 'rgba(255,140,70,0)');
+      gradient.addColorStop(0.16, 'rgba(255,255,255,.8)');
+      gradient.addColorStop(0.46, 'rgba(255,255,255,.22)');
+      gradient.addColorStop(1, 'rgba(255,255,255,0)');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, 64, 64);
     }
@@ -473,7 +473,7 @@ function hexToUpper(hex) {
       previous.copy(position);
     }
 
-    const fitHeight = pageHeight + 2.35;
+    const fitHeight = pageHeight / 0.85;
     const fitWidth = pageWidth + 0.7;
     const halfFov = THREE.MathUtils.degToRad(camera.fov * 0.5);
     const distanceForHeight = fitHeight / (2 * Math.tan(halfFov));

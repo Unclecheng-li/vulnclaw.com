@@ -750,3 +750,26 @@ function initGitHubStats() {
             forksEl.textContent = '---';
         });
 }
+
+/* ============ Fixed chrome visibility ============
+   Keep the top bar + header hidden while the lightCanvas hero fills the
+   first viewport; reveal them once the user scrolls past the hero. */
+(function () {
+    var hero = document.getElementById('hero');
+    if (!hero) return;
+    var scheduled = false;
+    function updateChrome() {
+        scheduled = false;
+        var bottom = hero.getBoundingClientRect().bottom;
+        document.body.classList.toggle('chrome-visible', bottom <= 4);
+    }
+    function onScroll() {
+        if (!scheduled) {
+            scheduled = true;
+            requestAnimationFrame(updateChrome);
+        }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    updateChrome();
+})();

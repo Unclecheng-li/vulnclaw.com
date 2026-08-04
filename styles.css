@@ -447,6 +447,28 @@ body:hover .cursor-outline {
   mix-blend-mode: multiply;
 }
 
+/* HTML-in-Canvas polyfill hit-test overlay: keep above content, below chrome. */
+[data-html-in-canvas-host] {
+  z-index: 3;
+}
+
+/* Hide fixed chrome while the lightCanvas hero fills the first viewport;
+   script.js toggles body.chrome-visible once the user scrolls past it. */
+.top-bar,
+.header {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-102%);
+  transition: opacity 0.36s ease, transform 0.36s ease, visibility 0s linear 0.36s;
+}
+
+body.chrome-visible .top-bar,
+body.chrome-visible .header {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity 0.36s ease, transform 0.36s ease, background 0.4s ease, box-shadow 0.4s ease;
+}
 .light-experience-shell .webgl-canvas {
   position: absolute;
   inset: 0;
@@ -494,7 +516,7 @@ body:hover .cursor-outline {
 }
 
 .page-source {
-  --lamp-color: #ffd2a3;
+  --lamp-color: #e5f3ff;
   position: relative;
   width: 1440px;
   height: 810px;
