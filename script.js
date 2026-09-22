@@ -516,22 +516,47 @@ function initTerminalScroll() {
 function copyInstall() {
     const command = 'pip install vulnclaw';
 
-    // Track download click
-    trackDownload();
+    // Copy first: the user-visible action must never depend on analytics.
+    writeToClipboard(command, () => {
+        showCopyFeedback('installBtnText', '已复制!');
+        showCopyFeedback('ctaBtnText', '已复制!');
+        setTimeout(() => {
+            resetBtnText('installBtnText', 'pip install vulnclaw');
+            resetBtnText('ctaBtnText', 'pip install vulnclaw');
+        }, 2000);
+    });
 
+    // Fire-and-forget download counter, see trackDownload() below.
+    trackDownload();
+}
+
+// POST a download-click to the stats Worker. This is called from inside the
+// install button's click handler, so it is deliberately bullet-proof: a missing
+// endpoint, blocked CORS, offline visitor or ad-blocker must all fail silently
+// instead of throwing and killing the copy that the user actually asked for.
+function trackDownload() {
+    try {
+        if (typeof fetch !== 'function') return;
+        fetch(`${STATS_API_BASE}/api/stats/download-click`, {
+            method: 'POST',
+            mode: 'cors',
+            keepalive: true
+        }).catch(() => {});
+    } catch (err) {
+        // Best-effort only: never propagate into the caller.
+    }
+}
+
+// Single clipboard entry point: async Clipboard API when available, legacy
+// execCommand when it is not, or when writeText rejects (insecure context,
+// iframe without clipboard-write permission, browser policy...).
+function writeToClipboard(text, onSuccess) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(command).then(() => {
-            showCopyFeedback('installBtnText', '已复制!');
-            showCopyFeedback('ctaBtnText', '已复制!');
-            setTimeout(() => {
-                resetBtnText('installBtnText', 'pip install vulnclaw');
-                resetBtnText('ctaBtnText', 'pip install vulnclaw');
-            }, 2000);
-        }).catch(() => {
-            fallbackCopy(command);
+        navigator.clipboard.writeText(text).then(onSuccess).catch(() => {
+            fallbackCopy(text, onSuccess);
         });
     } else {
-        fallbackCopy(command);
+        fallbackCopy(text, onSuccess);
     }
 }
 
@@ -546,17 +571,13 @@ vulnclaw config set llm.api_key sk-your-key-here
 vulnclaw doctor
 vulnclaw`;
 
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(workflow).then(() => {
-            const feedback = document.getElementById('copyFeedback');
-            if (feedback) {
-                feedback.textContent = '已复制!';
-                setTimeout(() => { feedback.textContent = ''; }, 2000);
-            }
-        });
-    } else {
-        fallbackCopy(workflow);
-    }
+    writeToClipboard(workflow, () => {
+        const feedback = document.getElementById('copyFeedback');
+        if (feedback) {
+            feedback.textContent = '已复制!';
+            setTimeout(() => { feedback.textContent = ''; }, 2000);
+        }
+    });
 }
 
 function showCopyFeedback(elementId, text) {
@@ -575,25 +596,31 @@ function resetBtnText(elementId, originalText) {
     }
 }
 
-function fallbackCopy(text) {
+function fallbackCopy(text, onSuccess) {
     const textarea = document.createElement('textarea');
     textarea.value = text;
+    textarea.setAttribute('readonly', '');
     textarea.style.position = 'fixed';
+    textarea.style.top = '-1000px';
     textarea.style.opacity = '0';
     document.body.appendChild(textarea);
     textarea.select();
+    textarea.setSelectionRange(0, text.length);
+
+    let copied = false;
     try {
-        document.execCommand('copy');
-        showCopyFeedback('installBtnText', '已复制!');
-        showCopyFeedback('ctaBtnText', '已复制!');
-        setTimeout(() => {
-            resetBtnText('installBtnText', 'pip install vulnclaw');
-            resetBtnText('ctaBtnText', 'pip install vulnclaw');
-        }, 2000);
+        // execCommand returns false when the copy is refused; it does not throw.
+        copied = document.execCommand('copy');
     } catch (err) {
-        alert('复制命令: ' + text);
+        copied = false;
     }
     document.body.removeChild(textarea);
+
+    if (copied) {
+        if (typeof onSuccess === 'function') onSuccess();
+    } else {
+        alert('复制失败，请手动复制：' + text);
+    }
 }
 
 // ============================================
